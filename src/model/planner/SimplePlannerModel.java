@@ -1,68 +1,115 @@
 package model.planner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 import model.date.PlannerDate;
 import model.theme.PlannerTheme;
 
 /**
  * An IPlannerModel implementation that represents a simple planner. It uses
  * the PlannerTheme class as the theme and the PlannerDate class as the
- * date. Test
+ * date.
  */
 public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDate> {
+  // for every date there is a list of tasks.
+  TreeMap<PlannerDate, List<String>> taskMap;
+  int totalPoints;
+  String userName;
+  List<PlannerTheme> themeList;
+  PlannerTheme currentTheme;
 
-  @Override
-  public void addTask(PlannerTheme task) {
-
+  /**
+   * Initializes a new simple planner.
+   */
+  public SimplePlannerModel() {
+    this.taskMap = new TreeMap<>();
+    this.totalPoints = 0;
+    this.userName = "Enter your name!";
+    this.themeList = new ArrayList<>(); // set a default theme?
   }
 
   @Override
-  public List<PlannerTheme> getTasks() {
-    return null;
+  public void addTask(String task, PlannerDate date) {
+    // check if the date already exists
+    if (this.taskMap.containsKey(date)) {
+      // add the task to the list of tasks at the given date
+      this.taskMap.get(date).add("task as a string");
+    } else {
+      // put the date as a new key in the tree map
+      this.taskMap.put(date, Arrays.asList(new String[]{task}));
+    }
   }
 
   @Override
-  public void removeTask(PlannerTheme task) {
-
+  public List<String> getTasks() {
+    // returns a copy of the tasks
+    List copy = new ArrayList();
+    copy.addAll(taskMap.values());
+    return copy;
   }
 
   @Override
-  public void moveTask(PlannerTheme task, PlannerDate date) {
+  public void removeTask(String task, PlannerDate date) {
+    this.taskMap.get(date).remove(task);
+  }
 
+  @Override
+  public void moveTask(String task, PlannerDate initialDate, PlannerDate newDate) {
+    // remove from initial date
+    this.taskMap.get(initialDate).remove(task);
+
+    // first check if the newDate already exists or not
+    if (this.taskMap.containsKey(newDate)) {
+      // add the task to the date key that already exists
+      this.taskMap.get(newDate).add(task);
+    } else {
+      // create the new date key and add the task
+      this.taskMap.put(newDate, Arrays.asList(new String[]{task}));
+    }
   }
 
   @Override
   public void addPoints(int points) {
-
+    this.totalPoints+=points;
   }
 
   @Override
   public int getTotalPoints() {
-    return 0;
+    return this.totalPoints;
   }
 
   @Override
   public void removePoints(int points) {
-
+    this.totalPoints-=points;
   }
 
   @Override
-  public void getUserName() {
-
+  public String getUserName() {
+    return this.userName;
   }
 
   @Override
   public void setUserName(String name) {
-
+    this.userName = name;
   }
 
   @Override
   public List<PlannerTheme> getThemes() {
-    return null;
+    // return a copy of the list of unlocked themes
+    List copy = new ArrayList();
+    copy.addAll(this.themeList);
+    return copy;
   }
 
   @Override
   public void addTheme(PlannerTheme theme) {
+    this.themeList.add(theme);
+  }
 
+  @Override
+  public void setTheme(PlannerTheme theme) {
+    this.currentTheme=theme;
   }
 }
