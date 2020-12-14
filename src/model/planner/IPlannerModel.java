@@ -1,7 +1,7 @@
 package model.planner;
 
 import java.util.List;
-
+//TODO add exceptions that should be thrown for invalid arguments
 /**
  * An interface that represents the model for a planner. The model stores, updates,
  * and provides access to the user's data. It is parameterized by task and date objects.

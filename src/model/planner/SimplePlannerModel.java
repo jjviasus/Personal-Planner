@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 import model.date.PlannerDate;
 import model.theme.PlannerTheme;
-
+//TODO check for valid arguments
 /**
  * An IPlannerModel implementation that represents a simple planner. It uses
  * the PlannerTheme class as the theme and the PlannerDate class as the
@@ -14,11 +14,11 @@ import model.theme.PlannerTheme;
  */
 public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDate> {
   // for every date there is a list of tasks.
-  TreeMap<PlannerDate, List<String>> taskMap;
-  int totalPoints;
-  String userName;
-  List<PlannerTheme> themeList;
-  PlannerTheme currentTheme;
+  private TreeMap<PlannerDate, List<String>> taskMap;
+  private int totalPoints;
+  private String userName;
+  private List<PlannerTheme> themeList;
+  private PlannerTheme currentTheme;
 
   /**
    * Initializes a new simple planner.
