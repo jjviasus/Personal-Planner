@@ -7,7 +7,7 @@ import model.theme.PlannerTheme;
 /**
  * An IPlannerModel implementation that represents a simple planner. It uses
  * the PlannerTheme class as the theme and the PlannerDate class as the
- * date.
+ * date. Test
  */
 public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDate> {
 
