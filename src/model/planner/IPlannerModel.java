@@ -40,6 +40,7 @@ public interface IPlannerModel<T, D> {
    */
   public void moveTask(String task, D initialDate, D newDate) throws IllegalArgumentException;
 
+  // this should be used for testing purposes only and then deleted after
   /**
    * Adds the given number of points to the model's point total.
    * @param points the points to be added as an integer
@@ -53,6 +54,7 @@ public interface IPlannerModel<T, D> {
    */
   public int getTotalPoints();
 
+  // this should be used for testing purposes only and then deleted after
   /**
    * Removes the given number of points from the model's point total.
    * @param points the points to be removed as an integer
@@ -73,11 +75,14 @@ public interface IPlannerModel<T, D> {
    */
   public void setUserName(String name) throws IllegalArgumentException;
 
+  // should this be a list of all the themes?
   /**
    * Returns a list of themes the user has unlocked.
    */
   public List<T> getThemes();
 
+  // is this not needed? the themes should be constructed within the model.
+  // this can be used for testing purposes? probably not.
   /**
    * Adds a given theme to the user's list of unlocked themes.
    * @param theme the new unlocked theme to be added to the list of themes for this model.
@@ -91,6 +96,15 @@ public interface IPlannerModel<T, D> {
    * @throws IllegalArgumentException thrown if the given theme is null
    */
   public void setTheme(T theme) throws IllegalArgumentException;
+
+  /**
+   * Gets the list of tasks in a given day.
+   * @param date the given day
+   */
+  public List<String> getTasksInDay(D date) throws IllegalArgumentException;
+
+
+  // get the total number of completed tasks in a given day
 
 
   // get completed tasks
