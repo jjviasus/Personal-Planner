@@ -1,7 +1,6 @@
 package model.theme;
 
 import java.awt.Color;
-//TODO check for invalid arguments in the setters
 /**
  * An ITheme implementation to be used a the theme for an IPlanner. Allows a user
  * to set and get the characteristics of this theme.
@@ -25,27 +24,42 @@ public class PlannerTheme implements ITheme {
   }
 
   @Override
-  public void setFont(String font) {
+  public void setFont(String font) throws IllegalArgumentException {
+    if (font == null) {
+      throw new IllegalArgumentException("null font given");
+    }
     this.font = font;
   }
 
   @Override
-  public void setTextColor(Color color) {
+  public void setTextColor(Color color) throws IllegalArgumentException {
+    if (color == null) {
+      throw new IllegalArgumentException("null color given");
+    }
     this.textColor = color;
   }
 
   @Override
-  public void setTextSize(int size) {
+  public void setTextSize(int size) throws IllegalArgumentException {
+    if (size <= 0) {
+      throw new IllegalArgumentException("text size must be positive");
+    }
     this.textSize = size;
   }
 
   @Override
-  public void setBackgroundColor(Color color) {
+  public void setBackgroundColor(Color color) throws IllegalArgumentException {
+    if (color == null) {
+      throw new IllegalArgumentException("null color given");
+    }
     this.backgroundColor = color;
   }
 
   @Override
-  public void setThemeName(String name) {
+  public void setThemeName(String name) throws IllegalArgumentException {
+    if (name == null) {
+      throw new IllegalArgumentException("null color given");
+    }
     this.themeName = name;
   }
 }

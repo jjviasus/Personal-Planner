@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 import model.date.PlannerDate;
 import model.theme.PlannerTheme;
-//TODO check for valid arguments
+//TODO add exceptions that should be thrown for invalid arguments
 /**
  * An IPlannerModel implementation that represents a simple planner. It uses
  * the PlannerTheme class as the theme and the PlannerDate class as the
@@ -20,6 +20,8 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   private List<PlannerTheme> themeList;
   private PlannerTheme currentTheme;
 
+  // should we have a list of locked themes?
+
   /**
    * Initializes a new simple planner.
    */
@@ -31,7 +33,10 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void addTask(String task, PlannerDate date) {
+  public void addTask(String task, PlannerDate date) throws IllegalArgumentException {
+    if (task == null || date == null) {
+      throw new IllegalArgumentException("task and date must be non-null");
+    }
     // check if the date already exists
     if (this.taskMap.containsKey(date)) {
       // add the task to the list of tasks at the given date
@@ -51,27 +56,58 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void removeTask(String task, PlannerDate date) {
-    this.taskMap.get(date).remove(task);
+  public void removeTask(String task, PlannerDate date) throws IllegalArgumentException {
+    if (task == null || date == null) {
+      throw new IllegalArgumentException("task and date must be non-null");
+    }
+    // first check that the date exists, then check if the task exists
+    if (!this.taskMap.containsKey(date)) {
+      throw new IllegalArgumentException("date does not exist");
+    } else {
+      // check that the task exists
+      if (this.taskMap.get(date).contains(task)) {
+        this.taskMap.get(date).remove(task);
+      } else {
+        throw new IllegalArgumentException("task does not exist");
+      }
+    }
   }
 
   @Override
-  public void moveTask(String task, PlannerDate initialDate, PlannerDate newDate) {
-    // remove from initial date
-    this.taskMap.get(initialDate).remove(task);
+  public void moveTask(String task, PlannerDate initialDate, PlannerDate newDate) throws
+      IllegalArgumentException {
+    if (task == null || initialDate == null || newDate == null) {
+      throw new IllegalArgumentException("task and dates must be non-null");
+    }
 
-    // first check if the newDate already exists or not
-    if (this.taskMap.containsKey(newDate)) {
-      // add the task to the date key that already exists
-      this.taskMap.get(newDate).add(task);
+    // check that the initialDate exists
+    if (!this.taskMap.containsKey(initialDate)) {
+      throw new IllegalArgumentException("initialDate does not exist");
     } else {
-      // create the new date key and add the task
-      this.taskMap.put(newDate, Arrays.asList(new String[]{task}));
+      // check that the task exists
+      if (this.taskMap.get(initialDate).contains(task)) {
+        // remove from initial date
+        this.taskMap.get(initialDate).remove(task);
+
+        // check if the newDate already exists or not
+        if (this.taskMap.containsKey(newDate)) {
+          // add the task to the date key that already exists
+          this.taskMap.get(newDate).add(task);
+        } else {
+          // create the new date key and add the task
+          this.taskMap.put(newDate, Arrays.asList(new String[]{task}));
+        }
+      } else {
+        throw new IllegalArgumentException("task does not exist");
+      }
     }
   }
 
   @Override
   public void addPoints(int points) {
+    if (points <= 0) {
+      throw new IllegalArgumentException("points must be positive");
+    }
     this.totalPoints+=points;
   }
 
@@ -82,6 +118,10 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
 
   @Override
   public void removePoints(int points) {
+    if (points <= 0 || points > this.totalPoints) {
+      throw new IllegalArgumentException("points must be positive and not exceed "
+          + "the model's total number of points");
+    }
     this.totalPoints-=points;
   }
 
@@ -91,7 +131,10 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void setUserName(String name) {
+  public void setUserName(String name) throws IllegalArgumentException {
+    if (name == null) {
+      throw new IllegalArgumentException("name must be non-null");
+    }
     this.userName = name;
   }
 
@@ -105,11 +148,17 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
 
   @Override
   public void addTheme(PlannerTheme theme) {
+    if (theme == null) {
+      throw new IllegalArgumentException("theme must be non-null");
+    }
     this.themeList.add(theme);
   }
 
   @Override
   public void setTheme(PlannerTheme theme) {
+    if (theme == null) {
+      throw new IllegalArgumentException("theme must be non-null");
+    }
     this.currentTheme=theme;
   }
 }
