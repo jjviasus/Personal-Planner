@@ -163,8 +163,80 @@ public class SimplePlannerModelTest {
   }
 
   // moveTask
+  @Test
+  public void moveTask() {
+    IPlannerModel<PlannerTheme, PlannerDate> model = new SimplePlannerModel();
+
+    // move a task to a new date with no tasks in it
+    model.addTask("Run", new PlannerDate(11,11,2000));
+    assertEquals(Arrays.asList("Run"), model.getTasksInDay(new PlannerDate(11,11,2000)));
+    model.moveTask("Run", new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+    assertEquals(Arrays.asList("Run"), model.getTasksInDay(new PlannerDate(11,12,2000)));
+    assertTrue(model.getTasksInDay(new PlannerDate(11,11,2000)).isEmpty());
+
+    // move a task to a date that already has tasks in it
+    model.addTask("Study", new PlannerDate(11,11,2000));
+    model.addTask("Work", new PlannerDate(11,11,2000));
+    model.moveTask("Study", new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+    assertEquals(Arrays.asList("Run", "Study"), model.getTasksInDay(new PlannerDate(11,12,2000)));
+    assertEquals(Arrays.asList("Work"), model.getTasksInDay(new PlannerDate(11,11,2000)));
+  }
 
   // moveTask invalid
+  @Test
+  public void moveTaskInvalid() {
+    IPlannerModel<PlannerTheme, PlannerDate> model = new SimplePlannerModel();
+    model.addTask("Run", new PlannerDate(11,11,2000));
+    model.addTask("Eat", new PlannerDate(11,12,2000));
+
+    // null task
+    try {
+      model.moveTask(null, new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+
+    // null initial date
+    try {
+      model.moveTask("Run", null, new PlannerDate(11,12,2000));
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+
+    // null new date
+    try {
+      model.moveTask("Run", new PlannerDate(11,11,2000), null);
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+
+    // initial date does not exist
+    try {
+      model.moveTask("Run", new PlannerDate(11,13,2000), new PlannerDate(11,12,2000));
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+
+    // task does not exist
+    try {
+      model.moveTask("Does not exist", new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+
+    // same date
+    try {
+      model.moveTask("Run", new PlannerDate(11,11,2000), new PlannerDate(11,11,2000));
+      fail();
+    } catch (IllegalArgumentException e) {
+      // exception caught
+    }
+  }
 
   // addPoints
 

@@ -68,4 +68,16 @@ public class PlannerDate implements IDate, Comparable<PlannerDate> {
     return (this.day + this.month * 100  + this.year * 100000) -
         (o.day + o.month * 100 + o.year * 100000);
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    PlannerDate date = (PlannerDate) obj;
+    return day == date.day && month == date.month && year == date.year;
+  }
 }

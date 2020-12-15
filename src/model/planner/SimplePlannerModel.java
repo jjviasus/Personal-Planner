@@ -97,6 +97,11 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
       throw new IllegalArgumentException("task and dates must be non-null");
     }
 
+    // check that initial date does not equal new date
+    if (initialDate.equals(newDate)) {
+      throw new IllegalArgumentException("dates must be different");
+    }
+
     // check that the initialDate exists
     if (!this.taskMap.containsKey(initialDate)) {
       throw new IllegalArgumentException("initialDate does not exist");
@@ -112,7 +117,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
         if (this.taskMap.containsKey(newDate)) {
           // add the task to the date key that already exists
           List<String> newValueList2 = new ArrayList<>(this.taskMap.get(newDate));
-          newValueList2.remove(task);
+          newValueList2.add(task);
           this.taskMap.put(newDate, newValueList2);
         } else {
           // create the new date key and add the task

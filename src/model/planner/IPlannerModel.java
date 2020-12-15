@@ -18,7 +18,7 @@ public interface IPlannerModel<T, D> {
   public void addTask(String task, D date) throws IllegalArgumentException;
 
   /**
-   * Gets the model's list of tasks.
+   * Gets a list of all the model's tasks.
    * @return the list of tasks the model has stored
    */
   public List<String> getTasks();
