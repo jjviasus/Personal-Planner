@@ -1,5 +1,8 @@
 package model.task;
 //TODO hashCode and equals
+
+import model.date.PlannerDate;
+
 /**
  * An implementation of an ITask to be used for a SimplePlannerModel.
  * It has a description and completion status.
@@ -45,11 +48,18 @@ public class PlannerTask implements ITask {
 
   @Override
   public boolean equals(Object o) {
-    return true;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PlannerTask task = (PlannerTask) o;
+    return description == task.description && status == task.status;
   }
 
   @Override
   public int hashCode() {
-    return 0;
+    return description.length() * 100000 + (status ? 1 : 1000);
   }
 }

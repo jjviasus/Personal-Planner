@@ -64,14 +64,21 @@ public interface IPlannerModel<Theme, Date, Task> {
    * Returns a list of all themes.
    * @return the list of all themes
    */
-  public List<Theme> getThemes();
+  public List<Theme> getAllThemes();
 
   /**
    * Sets the current theme to the given theme.
    * @param theme the desired theme the planner should be set to use
    * @throws IllegalArgumentException thrown if the given theme is null
+   * @throws IllegalStateException thrown if the theme has not been bought yet
    */
-  public void setTheme(Theme theme) throws IllegalArgumentException;
+  public void setCurrentTheme(Theme theme) throws IllegalArgumentException, IllegalStateException;
+
+  /**
+   * Gets the current theme of the model.
+   * @returns the current theme of the model
+   */
+  public Theme getCurrentTheme();
 
   /**
    * Gets the list of tasks in a given day.
@@ -98,13 +105,30 @@ public interface IPlannerModel<Theme, Date, Task> {
    */
   public void setTaskAsIncomplete(Task task, Date date) throws IllegalArgumentException;
 
+  /**
+   * Buys the given theme and deducts points from the model.
+   * @param theme the theme to buy
+   * @throws IllegalArgumentException if the theme is null or invalid
+   * @throws IllegalStateException if the cost of the theme is greater than the
+   * total points in the model
+   */
+  public void buyTheme(Theme theme) throws IllegalArgumentException, IllegalStateException;
 
-  // boolean, all tasks complete at given date?
-
-  // use points to buy theme
+  /**
+   * Returns true if all tasks at given date are complete.
+   * (Should I be adding points to the total points if the day is over? How will the model
+   * know the day is over?)
+   * @param date the given date to check
+   * @returns true if all tasks are complete, false otherwise
+   * @throws IllegalArgumentException thrown if the given date is null or contains no tasks
+   */
+  public boolean tasksCompleteAtDate(Date date) throws IllegalArgumentException;
 
   // get completed tasks
 
   // get uncompleted tasks
+
+  // should there be a method that checks what day it is, and if a given date has passed containing
+  // tasks, it checks if they are all complete and then awards the user points?
 
 }

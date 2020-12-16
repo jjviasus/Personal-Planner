@@ -148,7 +148,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public List<PlannerTheme> getThemes() {
+  public List<PlannerTheme> getAllThemes() {
     // return a copy of the list of all themes
     List copy = new ArrayList();
     copy.addAll(this.themeMap.keySet());
@@ -156,11 +156,20 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void setTheme(PlannerTheme theme) {
-    if (theme == null) {
-      throw new IllegalArgumentException("theme must be non-null");
+  public void setCurrentTheme(PlannerTheme theme) throws IllegalArgumentException, IllegalStateException {
+    if (theme == null || !this.themeMap.containsKey(theme)) {
+      throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
+    }
+
+    if (this.themeMap.get(theme) > this.totalPoints) {
+      throw new IllegalStateException("theme has not been bought yet");
     }
     this.currentTheme=theme;
+  }
+
+  @Override
+  public PlannerTheme getCurrentTheme() {
+    return this.currentTheme;
   }
 
   @Override
@@ -191,13 +200,54 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
           + "not exist at given date");
     } else {
       // mark task as complete
-
-      // a task can have a description (String), status (Boolean, true if complete, false otherwise)
+      int index = this.taskMap.get(date).indexOf(task);
+      this.taskMap.get(date).get(index).markComplete();
     }
   }
 
   @Override
   public void setTaskAsIncomplete(PlannerTask task, PlannerDate date) throws IllegalArgumentException {
+    if (task == null || date == null) {
+      throw new IllegalArgumentException("task and date must be non-null");
+    }
 
+    if (!this.taskMap.containsKey(date) || !this.taskMap.get(date).contains(task)) {
+      throw new IllegalArgumentException("date does not exist in the task map or task does"
+          + "not exist at given date");
+    } else {
+      // mark task as incomplete
+      int index = this.taskMap.get(date).indexOf(task);
+      this.taskMap.get(date).get(index).markIncomplete();
+    }
+
+  }
+
+  @Override
+  public void buyTheme(PlannerTheme theme)
+      throws IllegalArgumentException, IllegalStateException {
+    if (theme == null || !this.themeMap.containsKey(theme)) {
+      throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
+    }
+
+    if (this.themeMap.get(theme) > this.totalPoints) {
+      throw new IllegalStateException("insufficient funds to buy theme");
+    }
+
+    // set the theme price to zero
+    this.themeMap.put(theme, 0);
+  }
+
+  @Override
+  public boolean tasksCompleteAtDate(PlannerDate date) throws IllegalArgumentException {
+    if (date == null || !this.taskMap.containsKey(date)) {
+      throw new IllegalArgumentException("date was null or contained no tasks");
+    }
+
+    for (PlannerTask task : this.taskMap.get(date)) {
+      if (!task.getStatus()) {
+        return false;
+      }
+    }
+    return true;
   }
 }

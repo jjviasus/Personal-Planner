@@ -1,8 +1,9 @@
-import static org.junit.Assert.*;
-// TODO update tests so the tasks are not strings and are task objects themselves
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
 import model.planner.SimplePlannerModel;
@@ -20,21 +21,21 @@ public class SimplePlannerModelTest {
     // add the task
     model.addTask(new PlannerTask("Study"), new PlannerDate(11,11,2000));
     // check the model has the task
-    assertEquals(Arrays.asList("Study (incomplete)"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Study")), model.getAllTasks());
 
     // add another task same date
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     // check the model has the task
-    assertEquals(Arrays.asList("Study", "Run"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Study"), new PlannerTask("Run")), model.getAllTasks());
 
     // add another task later date
     model.addTask(new PlannerTask("Eat"), new PlannerDate(3,1,2020));
     // check the model has the task
-    assertEquals(Arrays.asList("Study", "Run", "Eat"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Study"), new PlannerTask("Run"), new PlannerTask("Eat")), model.getAllTasks());
 
     // add another task earlier date
     model.addTask(new PlannerTask("Sleep"), new PlannerDate(4,24,1990));
-    assertEquals(Arrays.asList("Sleep", "Study", "Run", "Eat"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Sleep"),new PlannerTask("Study"), new PlannerTask("Run"), new PlannerTask("Eat")), model.getAllTasks());
   }
 
   // addTask invalid
@@ -78,7 +79,7 @@ public class SimplePlannerModelTest {
     model.addTask(new PlannerTask("Roam the past"), new PlannerDate(6,1,1980));
 
     // get the tasks
-    assertEquals(new ArrayList<>(Arrays.asList("Roam the past (incomplete), Sleep (incomplete), Sleep again (incomplete), Run (incomplete), Run again (incomplete), Roam the future (incomplete)")), model.getAllTasks());
+    assertEquals(new ArrayList<>(Arrays.asList(new PlannerTask("Roam the past"), new PlannerTask("Sleep"), new PlannerTask("Sleep again"), new PlannerTask("Run"), new PlannerTask("Run again"), new PlannerTask("Roam the future"))), model.getAllTasks());
   }
 
   // removeTask
@@ -89,7 +90,7 @@ public class SimplePlannerModelTest {
     // add a task
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     // check its there
-    assertEquals(Arrays.asList("Run (incomplete)"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getAllTasks());
     // remove it
     model.removeTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     // check it was remove
@@ -99,11 +100,11 @@ public class SimplePlannerModelTest {
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     model.addTask(new PlannerTask("Run again"), new PlannerDate(1,12,2002));
     // check its there
-    assertEquals(Arrays.asList("Run", "Run again"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Run"), new PlannerTask("Run again")), model.getAllTasks());
     // remove it
     model.removeTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     // check it was remove
-    assertEquals(Arrays.asList("Run again"), model.getAllTasks());
+    assertEquals(Arrays.asList(new PlannerTask("Run again")), model.getAllTasks());
   }
 
   // removeTask invalid
@@ -167,17 +168,17 @@ public class SimplePlannerModelTest {
 
     // move a task to a new date with no tasks in it
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    assertEquals(Arrays.asList("Run (incomplete)"), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
     model.moveTask(new PlannerTask("Run"), new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
-    assertEquals(Arrays.asList("Run"), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
     assertTrue(model.getTasksAtDate(new PlannerDate(11,11,2000)).isEmpty());
 
     // move a task to a date that already has tasks in it
     model.addTask(new PlannerTask("Study"), new PlannerDate(11,11,2000));
     model.addTask(new PlannerTask("Work"), new PlannerDate(11,11,2000));
     model.moveTask(new PlannerTask("Study"), new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
-    assertEquals(Arrays.asList("Run", "Study"), model.getTasksAtDate(new PlannerDate(11,12,2000)));
-    assertEquals(Arrays.asList("Work"), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Run"), new PlannerTask("Study")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Work")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
   }
 
   // moveTask invalid
@@ -245,8 +246,8 @@ public class SimplePlannerModelTest {
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
     model.addTask(new PlannerTask("Eat again"), new PlannerDate(11,12,2000));
 
-    assertEquals(Arrays.asList("Run (incomplete)"), model.getTasksAtDate(new PlannerDate(11,11,2000)));
-    assertEquals(Arrays.asList("Eat", "Eat", "Eat again"), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    assertEquals(Arrays.asList(new PlannerTask("Eat"), new PlannerTask("Eat"), new PlannerTask("Eat again")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
   }
 
   // getTasksAtDate invalid
@@ -281,9 +282,9 @@ public class SimplePlannerModelTest {
 
   // setUserName invalid
 
-  // getThemes
+  // getAllThemes
 
-  // setTheme
+  // setCurrentTheme
 
-  // setTheme invalid
+  // setCurrentTheme invalid
 }
