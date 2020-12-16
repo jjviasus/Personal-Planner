@@ -84,6 +84,8 @@ public interface IPlannerModel<Theme, Date, Task> {
    * Gets the list of tasks in a given day.
    * @param date the given day
    * @return the list of tasks at the given date
+   * @throws IllegalArgumentException if the given date is null or has
+   * no tasks
    */
   public List<Task> getTasksAtDate(Date date) throws IllegalArgumentException;
 

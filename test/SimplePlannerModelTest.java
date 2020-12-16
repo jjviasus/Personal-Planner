@@ -237,6 +237,22 @@ public class SimplePlannerModelTest {
     }
   }
 
+  // getTotalPoints
+
+  // getUserName
+
+  // setUserName
+
+  // setUserName invalid
+
+  // getAllThemes
+
+  // setCurrentTheme
+
+  // setCurrentTheme invalid
+
+  // getCurrentTheme
+
   // getTasksAtDate
   @Test
   public void getTasksAtDate() {
@@ -274,17 +290,21 @@ public class SimplePlannerModelTest {
     }
   }
 
-  // getTotalPoints
+  // setTaskAsCompleted
 
-  // getUserName
+  // setTaskAsCompleted Invalid
 
-  // setUserName
+  // setTaskAsIncomplete
 
-  // setUserName invalid
+  // setTaskAsIncomplete Invalid
 
-  // getAllThemes
+  // buyTheme
 
-  // setCurrentTheme
+  // buyTheme invalid
 
-  // setCurrentTheme invalid
+  // tasksCompleteAtDate
+
+  // tasksCompleteAtDate Invalid
+
+
 }
