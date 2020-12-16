@@ -1,46 +1,41 @@
 package model.theme;
 
 import java.awt.Color;
-//TODO add exceptions that should be thrown for invalid arguments
+
 /**
- * An interface that represents a theme and keeps track of its unique characteristics.
+ * An interface that represents a theme. A theme has a text font, text color,
+ * themeName, first, second, and third color. The theme has three levels of colors, the first being
+ * the closest layer, the second being the intermediate layer, the third being the background layer
+ * that is farthest back.
  */
 public interface ITheme {
   /**
-   * Sets this theme's font to the provided font.
-   * @param font the name of the font as a String
-   * @throws IllegalArgumentException thrown if the given font is null
+   * Gets this theme's text font.
    */
-  public void setFont(String font) throws IllegalArgumentException;
+  public String getTextFont();
 
   /**
-   * Sets this theme's text color to the provided color.
-   * @param color the desired color the text should be set to
-   * @throws IllegalArgumentException thrown if the given color is null
+   * Gets this theme's text color.
    */
-  public void setTextColor(Color color) throws IllegalArgumentException;
+  public Color getTextColor();
 
   /**
-   * Sets this theme's text size to the provided size.
-   * @param size the desired size the text should be set to as an int
-   * @throws IllegalArgumentException thrown if the given size is invalid
+   * Gets this theme's first color.
    */
-  public void setTextSize(int size) throws IllegalArgumentException;
+  public Color getFirstColor();
 
   /**
-   * Sets this theme's background color to the provided color.
-   * @param color the desired color the background should be set to
-   * @throws IllegalArgumentException thrown if the given color is null
+   * Gets this theme's second color.
    */
-  public void setBackgroundColor(Color color) throws IllegalArgumentException;
+  public Color getSecondColor();
 
   /**
-   * Sets this theme's name to the provided name.
-   * @param name the desired name the theme will have as a String
-   * @throws IllegalArgumentException thrown if the given name is null
+   * Gets this theme's third color.
    */
-  public void setThemeName(String name) throws IllegalArgumentException;
+  public Color getThirdColor();
 
-  // set panel color (we could have secondary and third colors, basically levels
-  // of different colors for the theme)
+  /**
+   * Gets this theme's name.
+   */
+  public String getThemeName();
 }

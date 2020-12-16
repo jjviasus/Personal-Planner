@@ -1,65 +1,66 @@
 package model.theme;
 
 import java.awt.Color;
+import model.date.PlannerDate;
+
 /**
- * An ITheme implementation to be used a the theme for an IPlanner. Allows a user
- * to set and get the characteristics of this theme.
+ * An ITheme implementation to be used as the theme for an IPlanner. Allows a user
+ * to get the characteristics of this theme.
  */
-public class PlannerTheme implements ITheme {
-  private String font;
-  private Color textColor;
-  private int textSize;
-  private Color backgroundColor;
-  private String themeName;
+public class PlannerTheme implements ITheme, Comparable<PlannerTheme> {
+  private final String themeName;
+  private final String textFont;
+  private final Color textColor;
+  private final Color firstColor;
+  private final Color secondaryColor;
+  private final Color thirdColor;
 
   /**
-   * Constructs a theme with default values.
+   * Constructs a theme with the given values.
    */
-  public PlannerTheme() {
-    this.font = "Times New Roman";
-    this.textColor = new Color(0,0,0);
-    this.textSize = 12;
-    this.backgroundColor = new Color(255, 255, 255);
-    this.themeName = "Default theme";
+  public PlannerTheme(String themeName, String textFont, Color textColor, int textSize,
+      Color firstColor, Color secondaryColor, Color thirdColor) {
+    this.themeName = themeName;
+    this.textFont = textFont;
+    this.textColor = textColor;
+    this.firstColor = firstColor;
+    this.secondaryColor = secondaryColor;
+    this.thirdColor = thirdColor;
   }
 
   @Override
-  public void setFont(String font) throws IllegalArgumentException {
-    if (font == null) {
-      throw new IllegalArgumentException("null font given");
-    }
-    this.font = font;
+  public String getTextFont() {
+    return this.textFont;
   }
 
   @Override
-  public void setTextColor(Color color) throws IllegalArgumentException {
-    if (color == null) {
-      throw new IllegalArgumentException("null color given");
-    }
-    this.textColor = color;
+  public Color getTextColor() {
+    return this.textColor;
   }
 
   @Override
-  public void setTextSize(int size) throws IllegalArgumentException {
-    if (size <= 0) {
-      throw new IllegalArgumentException("text size must be positive");
-    }
-    this.textSize = size;
+  public Color getFirstColor() {
+    return this.firstColor;
   }
 
   @Override
-  public void setBackgroundColor(Color color) throws IllegalArgumentException {
-    if (color == null) {
-      throw new IllegalArgumentException("null color given");
-    }
-    this.backgroundColor = color;
+  public Color getSecondColor() {
+    return this.secondaryColor;
   }
 
   @Override
-  public void setThemeName(String name) throws IllegalArgumentException {
-    if (name == null) {
-      throw new IllegalArgumentException("null color given");
-    }
-    this.themeName = name;
+  public Color getThirdColor() {
+    return this.thirdColor;
+  }
+
+  @Override
+  public String getThemeName() {
+    return this.themeName;
+  }
+
+  @Override
+  public int compareTo(PlannerTheme o) {
+    return (this.firstColor.getBlue() * 100000 + this.secondaryColor.getBlue() * 100 + this.thirdColor.getBlue()) -
+        (o.firstColor.getBlue() * 100000 + o.secondaryColor.getBlue() * 100 + o.thirdColor.getBlue());
   }
 }
