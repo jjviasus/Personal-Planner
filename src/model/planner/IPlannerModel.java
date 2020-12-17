@@ -117,20 +117,23 @@ public interface IPlannerModel<Theme, Date, Task> {
   public void buyTheme(Theme theme) throws IllegalArgumentException, IllegalStateException;
 
   /**
-   * Returns true if all tasks at given date are complete.
-   * (Should I be adding points to the total points if the day is over? How will the model
-   * know the day is over?)
+   * Returns true if all tasks at given date are complete. If all tasks are complete
+   * at the given date and the current date is passed the given date, it adds points
+   * to the model's total.
    * @param date the given date to check
    * @returns true if all tasks are complete, false otherwise
    * @throws IllegalArgumentException thrown if the given date is null or contains no tasks
    */
   public boolean tasksCompleteAtDate(Date date) throws IllegalArgumentException;
 
+  /**
+   * Gets the current date in the form of a Date object.
+   * @returns the current date as a Date object
+   */
+  public Date getCurrentDate();
+
+
   // get completed tasks
 
   // get uncompleted tasks
-
-  // should there be a method that checks what day it is, and if a given date has passed containing
-  // tasks, it checks if they are all complete and then awards the user points?
-
 }

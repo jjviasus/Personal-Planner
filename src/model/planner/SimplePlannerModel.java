@@ -1,6 +1,8 @@
 package model.planner;
 
 import java.awt.Color;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +23,11 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   private String userName;
   private TreeMap<PlannerTheme, Integer> themeMap; // the value is the cost of the theme
   private PlannerTheme currentTheme;
+  private LocalDateTime now = LocalDateTime.now();
+  private int pointReward; // the number of points to reward a user for completing all their tasks
+  // at a particular date
+
+
 
   /**
    * Initializes a new simple planner.
@@ -33,6 +40,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
     this.themeMap.put(new PlannerTheme("Dark", "Courier New", new Color(255,255,255), 12, new Color(30,30,30), new Color(50,50,50), new Color(75,75,75)), 10);
     this.themeMap.put(new PlannerTheme("Light", "Times New Roman", new Color(30,30,30), 12, new Color(250,250,250), new Color(200,200,200), new Color(150,150,150)), 0);
     this.currentTheme = this.themeMap.firstKey();
+    this.pointReward = 10;
   }
 
   @Override
@@ -248,6 +256,21 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
         return false;
       }
     }
+
+    // since all tasks are complete, check if the given date has passed
+    if (this.getCurrentDate().compareTo(date) > 0) {
+      this.totalPoints+=this.pointReward;
+    }
+
     return true;
+  }
+
+  @Override
+  public PlannerDate getCurrentDate() {
+    LocalDateTime now = LocalDateTime.now();
+    int month = now.getMonthValue();
+    int day = now.getDayOfMonth();
+    int year = now.getYear();
+    return new PlannerDate(month, day, year);
   }
 }
