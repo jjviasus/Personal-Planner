@@ -38,4 +38,9 @@ public interface ITheme {
    * Gets this theme's name.
    */
   public String getThemeName();
+
+  /**
+   * Gets the cost of this theme
+   */
+  public int getCost();
 }

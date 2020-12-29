@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * An interface that represents the model for a planner. The model stores, updates,
- * and provides access to the user's data. It is parameterized by task and date objects.
+ * and provides access to the user's data. It is parameterized by theme, date, and task objects.
  * @param <Theme> the theme object that the model uses
  * @param <Date> the date object that the model uses
  * @param <Task> the task object that the model uses
@@ -46,8 +46,7 @@ public interface IPlannerModel<Theme, Date, Task> {
    * @return the total number of points as an integer
    */
   public int getTotalPoints();
-
-
+  
   /**
    * Returns the user's name as a String.
    */

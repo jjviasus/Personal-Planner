@@ -1,13 +1,19 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.awt.Color;
+import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
 import model.planner.SimplePlannerModel;
+import model.task.ITask;
 import model.task.PlannerTask;
+import model.theme.ITheme;
 import model.theme.PlannerTheme;
 import org.junit.Test;
 
@@ -15,7 +21,7 @@ public class SimplePlannerModelTest {
   // addTask
   @Test
   public void addTask() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
     // check model has no tasks
     assertTrue(model.getAllTasks().isEmpty());
     // add the task
@@ -41,7 +47,7 @@ public class SimplePlannerModelTest {
   // addTask invalid
   @Test
   public void addTaskInvalid() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // null task
     try {
@@ -65,7 +71,7 @@ public class SimplePlannerModelTest {
   // getAllTasks
   @Test
   public void getAllTasks() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // get tasks on empty list of tasks
     assertTrue(model.getAllTasks().isEmpty());
@@ -85,7 +91,7 @@ public class SimplePlannerModelTest {
   // removeTask
   @Test
   public void removeTask() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // add a task
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
@@ -110,7 +116,7 @@ public class SimplePlannerModelTest {
   // removeTask invalid
   @Test
   public void removeTaskInvalid() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // attempt to remove null task
     try {
@@ -164,7 +170,7 @@ public class SimplePlannerModelTest {
   // moveTask
   @Test
   public void moveTask() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // move a task to a new date with no tasks in it
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
@@ -184,7 +190,7 @@ public class SimplePlannerModelTest {
   // moveTask invalid
   @Test
   public void moveTaskInvalid() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
 
@@ -238,14 +244,103 @@ public class SimplePlannerModelTest {
   }
 
   // getTotalPoints
+  @Test
+  public void getTotalPoints() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // zero points
+    assertEquals(0, model.getTotalPoints());
+
+    // non-zero points
+    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    model.addTask(new PlannerTask("Eat"), new PlannerDate(11,11,2000));
+    model.addTask(new PlannerTask("Old task"), new PlannerDate(11,11,1950));
+    // check that the points have not been added
+    assertEquals(0, model.getTotalPoints());
+    // mark the old task as complete and check the points
+    model.setTaskAsCompleted(new PlannerTask("Old task"), new PlannerDate(11,11,1950));
+    assertEquals(true, model.tasksCompleteAtDate(new PlannerDate(11,11,1950)));
+    assertEquals(10, model.getTotalPoints());
+    // mark only one task on 11/11/2000 as complete, not both
+    model.setTaskAsCompleted(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    assertEquals(10, model.getTotalPoints());
+    assertEquals(false, model.tasksCompleteAtDate(new PlannerDate(11,11,2000)));
+    // mark both tasks on 11/11/2000 as complete
+    model.setTaskAsCompleted(new PlannerTask("Eat"), new PlannerDate(11,11,2000));
+    assertEquals(20, model.getTotalPoints());
+    assertEquals(true, model.tasksCompleteAtDate(new PlannerDate(11,11,2000)));
+  }
 
   // getUserName
+  @Test
+  public void getUserName() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // default user's name
+    assertEquals("Enter your name!", model.getUserName());
+
+    // set user's name
+    model.setUserName("Justin");
+    assertEquals("Justin", model.getUserName());
+  }
 
   // setUserName
+  @Test
+  public void setUserName() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // set user's name
+    assertEquals("Enter your name!", model.getUserName());
+    model.setUserName("Justin");
+    assertEquals("Justin", model.getUserName());
+
+    // update it
+    model.setUserName("Viasus");
+    assertEquals("Viasus", model.getUserName());
+  }
 
   // setUserName invalid
+  @Test
+  public void setUserNameInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
-  // getAllThemes
+    // set user's name to null
+    assertEquals("Enter your name!", model.getUserName());
+
+    try {
+      model.setUserName(null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    assertEquals("Enter your name!", model.getUserName());
+  }
+
+  // getAllThemes !!!
+  @Test
+  public void getAllThemes() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // TODO: themes are not ordered in the tree map by the Integer (their cost) they are ordered according to the compareTo method in PlannerTheme class
+
+    // TODO: fix why the equals is not working
+
+    // dark theme
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0);
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10);
+    // get themes
+    //assertTrue(model.getAllThemes().contains(light));
+
+    // attempt to modify themes
+
+    // check that they haven't been modified
+  }
 
   // setCurrentTheme
 
@@ -256,7 +351,7 @@ public class SimplePlannerModelTest {
   // getTasksAtDate
   @Test
   public void getTasksAtDate() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
@@ -269,7 +364,7 @@ public class SimplePlannerModelTest {
   // getTasksAtDate invalid
   @Test
   public void getTasksAtDateInvalid() {
-    IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> model = new SimplePlannerModel();
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
     // null date
     try {
@@ -291,10 +386,54 @@ public class SimplePlannerModelTest {
   }
 
   // setTaskAsCompleted
+  @Test
+  public void setTaskAsCompleted() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    // add task
+    model.addTask(run, date);
+    // check it is not complete
+    assertFalse(model.tasksCompleteAtDate(date));
+    // mark it as complete
+    model.setTaskAsCompleted(run, date);
+    assertTrue(model.tasksCompleteAtDate(date));
+
+    // mark an already complete task as complete
+    model.setTaskAsCompleted(run, date);
+    // check the completion status has not changed
+    assertTrue(model.tasksCompleteAtDate(date));
+  }
 
   // setTaskAsCompleted Invalid
 
   // setTaskAsIncomplete
+  @Test
+  public void setTaskAsIncomplete() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    // add task
+    model.addTask(run, date);
+    // check it is not complete
+    assertFalse(model.tasksCompleteAtDate(date));
+    // mark it as complete
+    model.setTaskAsCompleted(run, date);
+    assertTrue(model.tasksCompleteAtDate(date));
+    // mark it as incomplete
+    model.setTaskAsIncomplete(run, date);
+    // check it is not complete
+    assertFalse(model.tasksCompleteAtDate(date));
+
+    // mark an already incomplete task as incomplete
+    model.setTaskAsIncomplete(run, date);
+    // check the completion status has not changed
+    assertFalse(model.tasksCompleteAtDate(date));
+  }
 
   // setTaskAsIncomplete Invalid
 

@@ -7,22 +7,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
+import model.date.IDate;
 import model.date.PlannerDate;
+import model.task.ITask;
 import model.task.PlannerTask;
+import model.theme.ITheme;
 import model.theme.PlannerTheme;
 
 /**
  * An IPlannerModel implementation that represents a simple planner. It uses
- * the PlannerTheme class as the theme and the PlannerDate class as the
+ * the PlannerTheme class as the theme, PlannerTask class as the task, and the PlannerDate class as the
  * date. It keeps track of dates and tasks in a TreeMap. PlannerDate's are used
  * as keys and a list of Strings (as the tasks) are used as values.
  */
-public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDate, PlannerTask> {
-  private TreeMap<PlannerDate, List<PlannerTask>> taskMap;
+public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
+  private TreeMap<IDate, List<ITask>> taskMap;
   private int totalPoints;
   private String userName;
-  private TreeMap<PlannerTheme, Integer> themeMap; // the value is the cost of the theme
-  private PlannerTheme currentTheme;
+  private TreeMap<ITheme, Integer> themeMap; // the value is the cost of the theme
+  private ITheme currentTheme;
   private LocalDateTime now = LocalDateTime.now();
   private int pointReward; // the number of points to reward a user for completing all their tasks
   // at a particular date
@@ -37,38 +40,42 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
     this.totalPoints = 0;
     this.userName = "Enter your name!";
     this.themeMap = new TreeMap<>();
-    this.themeMap.put(new PlannerTheme("Dark", "Courier New", new Color(255,255,255), 12, new Color(30,30,30), new Color(50,50,50), new Color(75,75,75)), 10);
-    this.themeMap.put(new PlannerTheme("Light", "Times New Roman", new Color(30,30,30), 12, new Color(250,250,250), new Color(200,200,200), new Color(150,150,150)), 0);
+    this.themeMap.put(new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10), 10);
+    this.themeMap.put(new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0), 0);
     this.currentTheme = this.themeMap.firstKey();
     this.pointReward = 10;
   }
 
   @Override
-  public void addTask(PlannerTask task, PlannerDate date) throws IllegalArgumentException {
+  public void addTask(ITask task, IDate date) throws IllegalArgumentException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
     // check if the date already exists
     if (this.taskMap.containsKey(date)) {
       // add the task to the list of tasks at the given date
-      List<PlannerTask> newValueList = new ArrayList<>(this.taskMap.get(date));
+      List<ITask> newValueList = new ArrayList<>(this.taskMap.get(date));
       newValueList.add(task);
       this.taskMap.put(date, newValueList);
     } else {
       // put the date as a new key in the tree map
-      this.taskMap.put(date, Arrays.asList(new PlannerTask[]{task}));
+      this.taskMap.put(date, Arrays.asList(task));
     }
   }
 
   @Override
-  public List<PlannerTask> getAllTasks() {
+  public List<ITask> getAllTasks() {
     // list of values
-    List<List<PlannerTask>> copyValues = new ArrayList();
+    List<List<ITask>> copyValues = new ArrayList();
     copyValues.addAll(taskMap.values());
 
     // flatten the list of list of strings
-    List<PlannerTask> newList = new ArrayList();
-    for (List<PlannerTask> los : copyValues) {
+    List<ITask> newList = new ArrayList();
+    for (List<ITask> los : copyValues) {
       newList.addAll(los);
     }
 
@@ -78,7 +85,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void removeTask(PlannerTask task, PlannerDate date) throws IllegalArgumentException {
+  public void removeTask(ITask task, IDate date) throws IllegalArgumentException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
@@ -88,7 +95,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
     } else {
       // check that the task exists
       if (this.taskMap.get(date).contains(task)) {
-        List<PlannerTask> newValueList = new ArrayList<>(this.taskMap.get(date));
+        List<ITask> newValueList = new ArrayList<>(this.taskMap.get(date));
         newValueList.remove(task);
         this.taskMap.put(date, newValueList);
       } else {
@@ -98,7 +105,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void moveTask(PlannerTask task, PlannerDate initialDate, PlannerDate newDate) throws
+  public void moveTask(ITask task, IDate initialDate, IDate newDate) throws
       IllegalArgumentException {
     if (task == null || initialDate == null || newDate == null) {
       throw new IllegalArgumentException("task and dates must be non-null");
@@ -116,19 +123,19 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
       // check that the task exists
       if (this.taskMap.get(initialDate).contains(task)) {
         // remove from initial date
-        List<PlannerTask> newValueList = new ArrayList<>(this.taskMap.get(initialDate));
+        List<ITask> newValueList = new ArrayList<>(this.taskMap.get(initialDate));
         newValueList.remove(task);
         this.taskMap.put(initialDate, newValueList);
 
         // check if the newDate already exists or not
         if (this.taskMap.containsKey(newDate)) {
           // add the task to the date key that already exists
-          List<PlannerTask> newValueList2 = new ArrayList<>(this.taskMap.get(newDate));
+          List<ITask> newValueList2 = new ArrayList<>(this.taskMap.get(newDate));
           newValueList2.add(task);
           this.taskMap.put(newDate, newValueList2);
         } else {
           // create the new date key and add the task
-          this.taskMap.put(newDate, Arrays.asList(new PlannerTask[]{task}));
+          this.taskMap.put(newDate, Arrays.asList(task));
         }
       } else {
         throw new IllegalArgumentException("task does not exist");
@@ -156,7 +163,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public List<PlannerTheme> getAllThemes() {
+  public List<ITheme> getAllThemes() {
     // return a copy of the list of all themes
     List copy = new ArrayList();
     copy.addAll(this.themeMap.keySet());
@@ -164,7 +171,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void setCurrentTheme(PlannerTheme theme) throws IllegalArgumentException, IllegalStateException {
+  public void setCurrentTheme(ITheme theme) throws IllegalArgumentException, IllegalStateException {
     if (theme == null || !this.themeMap.containsKey(theme)) {
       throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
     }
@@ -176,12 +183,12 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public PlannerTheme getCurrentTheme() {
+  public ITheme getCurrentTheme() {
     return this.currentTheme;
   }
 
   @Override
-  public List<PlannerTask> getTasksAtDate(PlannerDate date) throws IllegalArgumentException {
+  public List<ITask> getTasksAtDate(IDate date) throws IllegalArgumentException {
     if (date == null) {
       throw new IllegalArgumentException("the date must be non-null");
     }
@@ -198,7 +205,7 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public void setTaskAsCompleted(PlannerTask task, PlannerDate date) throws IllegalArgumentException {
+  public void setTaskAsCompleted(ITask task, IDate date) throws IllegalArgumentException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
@@ -211,10 +218,15 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
       int index = this.taskMap.get(date).indexOf(task);
       this.taskMap.get(date).get(index).markComplete();
     }
+
+    // check if all the tasks are complete, if they are then update the points
+    if (this.tasksCompleteAtDate(date)) {
+      this.updatePoints(date);
+    }
   }
 
   @Override
-  public void setTaskAsIncomplete(PlannerTask task, PlannerDate date) throws IllegalArgumentException {
+  public void setTaskAsIncomplete(ITask task, IDate date) throws IllegalArgumentException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
@@ -230,8 +242,18 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
 
   }
 
+  private void updatePoints(IDate date) {
+    PlannerDate current = (PlannerDate) this.getCurrentDate();
+
+    // since all tasks are complete, check if the given date has passed
+    if (current.compareTo((PlannerDate) date) > 0) {
+      // update the points
+      this.totalPoints+=this.pointReward;
+    }
+  }
+
   @Override
-  public void buyTheme(PlannerTheme theme)
+  public void buyTheme(ITheme theme)
       throws IllegalArgumentException, IllegalStateException {
     if (theme == null || !this.themeMap.containsKey(theme)) {
       throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
@@ -246,27 +268,22 @@ public class SimplePlannerModel implements IPlannerModel<PlannerTheme, PlannerDa
   }
 
   @Override
-  public boolean tasksCompleteAtDate(PlannerDate date) throws IllegalArgumentException {
+  public boolean tasksCompleteAtDate(IDate date) throws IllegalArgumentException {
     if (date == null || !this.taskMap.containsKey(date)) {
       throw new IllegalArgumentException("date was null or contained no tasks");
     }
 
-    for (PlannerTask task : this.taskMap.get(date)) {
+    for (ITask task : this.taskMap.get(date)) {
       if (!task.getStatus()) {
         return false;
       }
-    }
-
-    // since all tasks are complete, check if the given date has passed
-    if (this.getCurrentDate().compareTo(date) > 0) {
-      this.totalPoints+=this.pointReward;
     }
 
     return true;
   }
 
   @Override
-  public PlannerDate getCurrentDate() {
+  public IDate getCurrentDate() {
     LocalDateTime now = LocalDateTime.now();
     int month = now.getMonthValue();
     int day = now.getDayOfMonth();
