@@ -42,10 +42,10 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
     this.themeMap = new TreeMap<>();
     this.themeMap.put(new PlannerTheme("Dark", "Courier New",
         new Color(255,255,255), 12, new Color(30,30,30),
-        new Color(50,50,50), new Color(75,75,75), 10), 10);
+        new Color(50,50,50), new Color(75,75,75), 10, 1), 10);
     this.themeMap.put(new PlannerTheme("Light", "Times New Roman",
         new Color(30,30,30), 12, new Color(250,250,250),
-        new Color(200,200,200), new Color(150,150,150), 0), 0);
+        new Color(200,200,200), new Color(150,150,150), 0, 0), 0);
     this.currentTheme = this.themeMap.firstKey();
     this.pointReward = 10;
   }

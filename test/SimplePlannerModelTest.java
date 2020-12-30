@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.Box.Filler;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
@@ -16,6 +17,8 @@ import model.task.PlannerTask;
 import model.theme.ITheme;
 import model.theme.PlannerTheme;
 import org.junit.Test;
+
+// TODO: make sure nothing returns a reference and always returns a copy in the classes, attempt modifying the data and ensure that it does not change
 
 public class SimplePlannerModelTest {
   // addTask
@@ -99,8 +102,9 @@ public class SimplePlannerModelTest {
     assertEquals(Arrays.asList(new PlannerTask("Run")), model.getAllTasks());
     // remove it
     model.removeTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    // check it was remove
+    // check it was removed
     assertTrue(model.getAllTasks().isEmpty());
+
 
     // add tasks different days
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
@@ -318,33 +322,77 @@ public class SimplePlannerModelTest {
     assertEquals("Enter your name!", model.getUserName());
   }
 
-  // getAllThemes !!!
+  // getAllThemes
   @Test
   public void getAllThemes() {
     IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
-    // TODO: themes are not ordered in the tree map by the Integer (their cost) they are ordered according to the compareTo method in PlannerTheme class
-
-    // TODO: fix why the equals is not working
-
     // dark theme
     ITheme light = new PlannerTheme("Light", "Times New Roman",
         new Color(30,30,30), 12, new Color(250,250,250),
-        new Color(200,200,200), new Color(150,150,150), 0);
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
     ITheme dark = new PlannerTheme("Dark", "Courier New",
         new Color(255,255,255), 12, new Color(30,30,30),
-        new Color(50,50,50), new Color(75,75,75), 10);
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
     // get themes
-    //assertTrue(model.getAllThemes().contains(light));
+    System.out.println(model.getAllThemes());
+    assertTrue(model.getAllThemes().contains(light));
+    assertEquals(new ArrayList(Arrays.asList(light, dark)), model.getAllThemes());
 
     // attempt to modify themes
-
+    model.getAllThemes().remove(light);
+    model.getAllThemes().remove(dark);
     // check that they haven't been modified
+    assertTrue(model.getAllThemes().contains(light));
+    assertTrue(model.getAllThemes().contains(dark));
+    assertEquals(new ArrayList(Arrays.asList(light, dark)), model.getAllThemes());
   }
 
   // setCurrentTheme
 
   // setCurrentTheme invalid
+  @Test
+  public void setCurrentThemeInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // dark theme
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
+    ITheme invalidTheme = new PlannerTheme("Does not exist", "Wrong",
+        new Color(0,255,255), 20, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 2);
+
+    // null
+    try {
+      model.setCurrentTheme(null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // theme has not been bought yet
+    try {
+      model.setCurrentTheme(dark);
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+
+    // invalid theme
+    try {
+      model.setCurrentTheme(invalidTheme);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+  }
 
   // getCurrentTheme
 
@@ -562,13 +610,14 @@ public class SimplePlannerModelTest {
       // exception thrown
     }
 
-    // test adding a date with a task, then removing that task and checking if it
+    // test adding a date with a task, then removing that its only task and checking if it
     // still throws an error
     ITask run = new PlannerTask("Run");
     IDate date = new PlannerDate(11,11,2000);
 
     model.addTask(run, date);
     model.removeTask(run, date);
+    // check that the key got deleted from the dictionary
     try {
       model.tasksCompleteAtDate(date);
       fail();
@@ -578,7 +627,6 @@ public class SimplePlannerModelTest {
     }
   }
 
-  // TODO: test remove task when you remove the last task from the date and that the key gets deleted from the dictionary
 
 
 }

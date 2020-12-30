@@ -11,28 +11,58 @@ public class PlannerTheme implements ITheme, Comparable<PlannerTheme> {
   private final String themeName;
   private final String textFont;
   private final Color textColor;
+  private final int textSize;
   private final Color firstColor;
   private final Color secondaryColor;
   private final Color thirdColor;
   private final int cost;
+  private final int id;
 
+  /* this.themeMap.put(new PlannerTheme("Dark", "Courier New",
+      new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10), 10);
+
+        */
+
+/*
   public enum Theme {
-    LIGHT,
-    DARK
+    LIGHT("Light", "Times New Roman", new Color(30,30,30), 12, new Color(250,250,250), new Color(200,200,200), new Color(150,150,150), 0),
+
+    private final String themeName;
+    private final String textFont;
+    private final Color textColor;
+    private final Color firstColor;
+    private final Color secondaryColor;
+    private final Color thirdColor;
+    private final int cost;
+
+    private Theme(String themeName, String textFont, Color textColor, int textSize,
+        Color firstColor, Color secondaryColor, Color thirdColor, int cost) {
+      this.themeName = themeName;
+      this.textFont = textFont;
+      this.textColor = textColor;
+      this.firstColor = firstColor;
+      this.secondaryColor = secondaryColor;
+      this.thirdColor = thirdColor;
+      this.cost = cost;
+    }
   }
+*/
 
   /**
    * Constructs a theme with the given values.
    */
   public PlannerTheme(String themeName, String textFont, Color textColor, int textSize,
-      Color firstColor, Color secondaryColor, Color thirdColor, int cost) {
+      Color firstColor, Color secondaryColor, Color thirdColor, int cost, int id) {
     this.themeName = themeName;
     this.textFont = textFont;
     this.textColor = textColor;
+    this.textSize = textSize;
     this.firstColor = firstColor;
     this.secondaryColor = secondaryColor;
     this.thirdColor = thirdColor;
     this.cost = cost;
+    this.id = id;
   }
 
   @Override
@@ -43,6 +73,11 @@ public class PlannerTheme implements ITheme, Comparable<PlannerTheme> {
   @Override
   public Color getTextColor() {
     return this.textColor;
+  }
+
+  @Override
+  public int getTextSize() {
+    return this.textSize;
   }
 
   @Override
@@ -69,8 +104,13 @@ public class PlannerTheme implements ITheme, Comparable<PlannerTheme> {
   public int getCost() { return this.cost;}
 
   @Override
+  public int getID() {
+    return this.id;
+  }
+
+  @Override
   public int compareTo(PlannerTheme o) {
-    return this.cost - o.cost;
+    return this.id - o.id;
   }
 
   @Override
@@ -83,12 +123,12 @@ public class PlannerTheme implements ITheme, Comparable<PlannerTheme> {
     }
 
     PlannerTheme theme = (PlannerTheme) obj;
-    return themeName == theme.themeName && textFont == theme.textFont && textColor == theme.textColor && firstColor == theme.firstColor && secondaryColor == theme.secondaryColor && thirdColor == theme.thirdColor;
+    return themeName == theme.themeName && textFont == theme.textFont && textColor.equals(theme.textColor) && textSize == theme.textSize && firstColor.equals(theme.firstColor) && secondaryColor.equals(theme.secondaryColor) && thirdColor.equals(theme.thirdColor) && cost == theme.cost && id == theme.id;
   }
 
   @Override
   public int hashCode() {
-    return themeName.length() * 100000 + textFont.length() * 10;
+    return this.id;
   }
 
   @Override
