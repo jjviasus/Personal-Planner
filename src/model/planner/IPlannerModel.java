@@ -92,19 +92,19 @@ public interface IPlannerModel<Theme, Date, Task> {
    * Sets the given task at the given date as completed
    * @param task the task to be marked as completed
    * @param date the date where the task exists
-   * @throws IllegalArgumentException thrown if the given task is null, date is null,
-   * or if the task does not exist at the given date
+   * @throws IllegalArgumentException thrown if the given task is null or date is null
+   * @throws IllegalStateException thrown if the task does not exist at the given date
    */
-  public void setTaskAsCompleted(Task task, Date date) throws IllegalArgumentException;
+  public void setTaskAsCompleted(Task task, Date date) throws IllegalArgumentException, IllegalStateException;
 
   /**
    * Sets the given task at the given date as incomplete
    * @param task the task to be marked as incomplete
    * @param date the date where the task exists
-   * @throws IllegalArgumentException thrown if the given task is null, date is null,
-   * or if the task does not exist at the given date
+   * @throws IllegalArgumentException thrown if the given task is null or date is null
+   * @throws IllegalStateException thrown if the task does not exist at the given date
    */
-  public void setTaskAsIncomplete(Task task, Date date) throws IllegalArgumentException;
+  public void setTaskAsIncomplete(Task task, Date date) throws IllegalArgumentException, IllegalStateException;
 
   /**
    * Buys the given theme and deducts points from the model.

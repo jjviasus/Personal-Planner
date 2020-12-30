@@ -98,6 +98,12 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
         List<ITask> newValueList = new ArrayList<>(this.taskMap.get(date));
         newValueList.remove(task);
         this.taskMap.put(date, newValueList);
+
+        // if the list of tasks for this date is empty, then remove it from the tree map
+        if (this.taskMap.get(date).isEmpty()) {
+          this.taskMap.remove(date);
+        }
+
       } else {
         throw new IllegalArgumentException("task does not exist");
       }
@@ -205,13 +211,13 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
   }
 
   @Override
-  public void setTaskAsCompleted(ITask task, IDate date) throws IllegalArgumentException {
+  public void setTaskAsCompleted(ITask task, IDate date) throws IllegalArgumentException, IllegalStateException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
 
     if (!this.taskMap.containsKey(date) || !this.taskMap.get(date).contains(task)) {
-      throw new IllegalArgumentException("date does not exist in the task map or task does"
+      throw new IllegalStateException("date does not exist in the task map or task does"
           + "not exist at given date");
     } else {
       // mark task as complete
@@ -226,13 +232,13 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
   }
 
   @Override
-  public void setTaskAsIncomplete(ITask task, IDate date) throws IllegalArgumentException {
+  public void setTaskAsIncomplete(ITask task, IDate date) throws IllegalArgumentException, IllegalStateException {
     if (task == null || date == null) {
       throw new IllegalArgumentException("task and date must be non-null");
     }
 
     if (!this.taskMap.containsKey(date) || !this.taskMap.get(date).contains(task)) {
-      throw new IllegalArgumentException("date does not exist in the task map or task does"
+      throw new IllegalStateException("date does not exist in the task map or task does"
           + "not exist at given date");
     } else {
       // mark task as incomplete

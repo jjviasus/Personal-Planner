@@ -408,6 +408,51 @@ public class SimplePlannerModelTest {
   }
 
   // setTaskAsCompleted Invalid
+  @Test
+  public void setTaskAsCompletedInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    // null task
+    try {
+      model.setTaskAsCompleted(null, date);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // null date
+    try {
+      model.setTaskAsCompleted(run, null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    model.addTask(run, date);
+
+    // date is not in tree map (has not tasks)
+    try {
+      model.setTaskAsCompleted(run, new PlannerDate(1,1,1900));
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+
+    // task is not present at date
+    try {
+      model.setTaskAsCompleted(new PlannerTask("Not present"), date);
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+  }
 
   // setTaskAsIncomplete
   @Test
@@ -436,14 +481,104 @@ public class SimplePlannerModelTest {
   }
 
   // setTaskAsIncomplete Invalid
+  @Test
+  public void setTaskAsIncompleteInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    // null task
+    try {
+      model.setTaskAsIncomplete(null, date);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // null date
+    try {
+      model.setTaskAsIncomplete(run, null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    model.addTask(run, date);
+
+    // date is not in tree map (has not tasks)
+    try {
+      model.setTaskAsIncomplete(run, new PlannerDate(1,1,1900));
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+
+    // task is not present at date
+    try {
+      model.setTaskAsIncomplete(new PlannerTask("Not present"), date);
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+  }
 
   // buyTheme
 
   // buyTheme invalid
 
   // tasksCompleteAtDate
+  @Test
+  public void tasksCompleteAtDate() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+
+  }
 
   // tasksCompleteAtDate Invalid
+  @Test
+  public void tasksCompleteAtDateInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // null date
+    try {
+      model.tasksCompleteAtDate(null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // date contains no tasks
+    try {
+      model.tasksCompleteAtDate(new PlannerDate(1,1,1));
+      fail();
+      //exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // test adding a date with a task, then removing that task and checking if it
+    // still throws an error
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    model.addTask(run, date);
+    model.removeTask(run, date);
+    try {
+      model.tasksCompleteAtDate(date);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+  }
+
+  // TODO: test remove task when you remove the last task from the date and that the key gets deleted from the dictionary
 
 
 }
