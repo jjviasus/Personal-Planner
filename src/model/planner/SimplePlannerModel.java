@@ -2,7 +2,6 @@ package model.planner;
 
 import java.awt.Color;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.TreeMap;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.task.ITask;
-import model.task.PlannerTask;
 import model.theme.ITheme;
 import model.theme.PlannerTheme;
 
@@ -18,17 +16,19 @@ import model.theme.PlannerTheme;
  * An IPlannerModel implementation that represents a simple planner. It uses
  * the PlannerTheme class as the theme, PlannerTask class as the task, and the PlannerDate class as the
  * date. It keeps track of dates and tasks in a TreeMap. PlannerDate's are used
- * as keys and a list of Strings (as the tasks) are used as values.
+ * as keys and a list of PlannerTasks are used as values. A TreeMap is used because the keys are
+ * ordered by the PlannerDates (the earlier dates (as the keys) come first while later dates come later
+ * in the tree map).
  */
 public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
-  private TreeMap<IDate, List<ITask>> taskMap;
-  private int totalPoints;
-  private String userName;
+  private TreeMap<IDate, List<ITask>> taskMap; // a date with a corresponding list of tasks
+  private int totalPoints; // the points a user has accumulated
+  private String userName; // the user's name
   private TreeMap<ITheme, Boolean> themeMap; // the value indicates if the theme has been bought
-  private ITheme currentTheme;
-  private LocalDateTime now = LocalDateTime.now();
+  private ITheme currentTheme; // the theme this model is current using
+  private LocalDateTime now = LocalDateTime.now(); // the current date
   private int pointReward; // the number of points to reward a user for completing all their tasks
-  // at a particular date
+  // at a particular date that has passed
 
 
 
