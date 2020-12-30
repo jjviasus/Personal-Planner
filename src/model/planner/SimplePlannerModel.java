@@ -24,7 +24,7 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
   private TreeMap<IDate, List<ITask>> taskMap;
   private int totalPoints;
   private String userName;
-  private TreeMap<ITheme, Integer> themeMap; // the value is the cost of the theme
+  private TreeMap<ITheme, Boolean> themeMap; // the value indicates if the theme has been bought
   private ITheme currentTheme;
   private LocalDateTime now = LocalDateTime.now();
   private int pointReward; // the number of points to reward a user for completing all their tasks
@@ -42,10 +42,10 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
     this.themeMap = new TreeMap<>();
     this.themeMap.put(new PlannerTheme("Dark", "Courier New",
         new Color(255,255,255), 12, new Color(30,30,30),
-        new Color(50,50,50), new Color(75,75,75), 10, 1), 10);
+        new Color(50,50,50), new Color(75,75,75), 10, 1), false);
     this.themeMap.put(new PlannerTheme("Light", "Times New Roman",
         new Color(30,30,30), 12, new Color(250,250,250),
-        new Color(200,200,200), new Color(150,150,150), 0, 0), 0);
+        new Color(200,200,200), new Color(150,150,150), 0, 0), true);
     this.currentTheme = this.themeMap.firstKey();
     this.pointReward = 10;
   }
@@ -182,7 +182,7 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
       throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
     }
 
-    if (this.themeMap.get(theme) > this.totalPoints) {
+    if (!this.themeMap.get(theme)) {
       throw new IllegalStateException("theme has not been bought yet");
     }
     this.currentTheme=theme;
@@ -265,12 +265,12 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
       throw new IllegalArgumentException("theme must be non-null and must be a valid theme");
     }
 
-    if (this.themeMap.get(theme) > this.totalPoints) {
+    if (theme.getCost() > this.totalPoints) {
       throw new IllegalStateException("insufficient funds to buy theme");
     }
 
-    // set the theme price to zero
-    this.themeMap.put(theme, 0);
+    // indicate that the theme has been bought
+    this.themeMap.put(theme, true);
   }
 
   @Override

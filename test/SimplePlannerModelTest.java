@@ -349,6 +349,41 @@ public class SimplePlannerModelTest {
   }
 
   // setCurrentTheme
+  @Test
+  public void setCurrentTheme() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
+
+    assertEquals(light, model.getCurrentTheme());
+
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    model.addTask(run, date);
+    model.setTaskAsCompleted(run, date);
+    assertEquals(10, model.getTotalPoints());
+
+    // change the current theme
+    model.buyTheme(dark);
+    model.setCurrentTheme(dark);
+    assertEquals(dark, model.getCurrentTheme());
+
+    // change it back to light
+    model.setCurrentTheme(light);
+    assertEquals(light, model.getCurrentTheme());
+
+    // attempt setting the same theme that is already set
+    // change it back to light
+    model.setCurrentTheme(light);
+    assertEquals(light, model.getCurrentTheme());
+  }
 
   // setCurrentTheme invalid
   @Test
@@ -392,9 +427,51 @@ public class SimplePlannerModelTest {
     } catch (IllegalArgumentException e) {
       // exception thrown
     }
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+    IDate futureDate = new PlannerDate(11,11,2021);
+
+    model.addTask(run, futureDate);
+    model.setTaskAsCompleted(run, futureDate);
+    // check that the future date being complete does not mean points are award
+    // and can set the current theme to dark
+    try {
+      model.setCurrentTheme(dark);
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
   }
 
   // getCurrentTheme
+  @Test
+  public void getCurrentTheme() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
+
+    assertEquals(light, model.getCurrentTheme());
+
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    model.addTask(run, date);
+    model.setTaskAsCompleted(run, date);
+    assertEquals(10, model.getTotalPoints());
+
+    // change the current theme
+    model.buyTheme(dark);
+    model.setCurrentTheme(dark);
+    assertEquals(dark, model.getCurrentTheme());
+  }
 
   // getTasksAtDate
   @Test
@@ -576,8 +653,88 @@ public class SimplePlannerModelTest {
   }
 
   // buyTheme
+  @Test
+  public void buyTheme() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
+
+    assertEquals(light, model.getCurrentTheme());
+
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    model.addTask(run, date);
+    model.setTaskAsCompleted(run, date);
+    assertEquals(10, model.getTotalPoints());
+
+    // buy the dark theme
+    model.buyTheme(dark);
+    model.setCurrentTheme(dark);
+    assertEquals(dark, model.getCurrentTheme());
+
+    // attempt buying themes that have already been bought
+    model.buyTheme(dark);
+    model.buyTheme(light);
+    // check that the current theme has not been changed
+    assertEquals(dark, model.getCurrentTheme());
+  }
 
   // buyTheme invalid
+  @Test
+  public void buyThemeInvalid() {
+    IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    ITheme light = new PlannerTheme("Light", "Times New Roman",
+        new Color(30,30,30), 12, new Color(250,250,250),
+        new Color(200,200,200), new Color(150,150,150), 0, 0);
+
+    assertEquals(light, model.getCurrentTheme());
+
+    ITheme dark = new PlannerTheme("Dark", "Courier New",
+        new Color(255,255,255), 12, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 1);
+
+    ITask run = new PlannerTask("Run");
+    IDate date = new PlannerDate(11,11,2000);
+
+    // null theme
+    try {
+      model.buyTheme(null);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    ITheme invalidTheme = new PlannerTheme("Does not exist", "Wrong",
+        new Color(0,255,255), 20, new Color(30,30,30),
+        new Color(50,50,50), new Color(75,75,75), 10, 2);
+
+    // theme that does not exist
+    try {
+      model.buyTheme(invalidTheme);
+      fail();
+      // exception not thrown
+    } catch (IllegalArgumentException e) {
+      // exception thrown
+    }
+
+    // insufficient funds
+    try {
+      model.buyTheme(dark);
+      fail();
+      // exception not thrown
+    } catch (IllegalStateException e) {
+      // exception thrown
+    }
+  }
 
   // tasksCompleteAtDate
   @Test
@@ -626,7 +783,5 @@ public class SimplePlannerModelTest {
       // exception thrown
     }
   }
-
-
 
 }
