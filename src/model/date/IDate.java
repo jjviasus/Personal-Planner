@@ -21,4 +21,14 @@ public interface IDate {
    * @returns the year as an int
    */
   public int getYear();
+
+  /**
+   * Adds one day to the current date.
+   */
+  public void addDay();
+
+  /**
+   * Subtracts one day from the current date.
+   */
+  public void subtractDay();
 }

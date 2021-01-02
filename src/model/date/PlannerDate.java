@@ -1,5 +1,8 @@
 package model.date;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
 /**
  * An IDate implementation that is to used for an IPlanner.
  */
@@ -64,6 +67,24 @@ public class PlannerDate implements IDate, Comparable<PlannerDate> {
   }
 
   @Override
+  public void addDay() {
+    LocalDateTime thisDate = LocalDateTime.of(this.year, this.month, this.day, 1,1);
+    LocalDateTime newDate = thisDate.plusDays(1);
+    this.month = newDate.getMonthValue();
+    this.day = newDate.getDayOfMonth();
+    this.year = newDate.getYear();
+  }
+
+  @Override
+  public void subtractDay() {
+    LocalDateTime thisDate = LocalDateTime.of(this.year, this.month, this.day, 1,1);
+    LocalDateTime newDate = thisDate.minusDays(1);
+    this.month = newDate.getMonthValue();
+    this.day = newDate.getDayOfMonth();
+    this.year = newDate.getYear();
+  }
+
+  @Override
   public int compareTo(PlannerDate o) {
     return (this.day + this.month * 100  + this.year * 100000) -
         (o.day + o.month * 100 + o.year * 100000);
@@ -79,5 +100,10 @@ public class PlannerDate implements IDate, Comparable<PlannerDate> {
     }
     PlannerDate date = (PlannerDate) obj;
     return day == date.day && month == date.month && year == date.year;
+  }
+
+  @Override
+  public String toString() {
+    return this.month + "/" + this.day + "/" + this.year;
   }
 }

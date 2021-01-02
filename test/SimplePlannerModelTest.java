@@ -477,6 +477,10 @@ public class SimplePlannerModelTest {
   @Test
   public void getTasksAtDate() {
     IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
+
+    // date that has no tasks
+    assertEquals(new ArrayList<>(), model.getTasksAtDate(new PlannerDate(1,1,2000)));
+
     model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
     model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
@@ -500,14 +504,14 @@ public class SimplePlannerModelTest {
       // exception thrown
     }
 
-    // a date that has no tasks
+/*    // a date that has no tasks
     try {
       model.getTasksAtDate(new PlannerDate(11,11,2000));
       // exception not thrown
       fail();
     } catch (IllegalArgumentException e) {
       // exception thrown
-    }
+    }*/
   }
 
   // setTaskAsCompleted

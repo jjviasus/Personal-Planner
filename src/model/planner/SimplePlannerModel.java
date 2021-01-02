@@ -201,7 +201,8 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
 
     // check that the date is in the taskMap
     if (!this.taskMap.containsKey(date)) {
-      throw new IllegalArgumentException("date has no tasks");
+      return new ArrayList<>();
+      //throw new IllegalArgumentException("date has no tasks");
     }
 
     // return a copy of the tasks in a given day

@@ -132,7 +132,18 @@ public interface IPlannerModel<Theme, Date, Task> {
   public Date getCurrentDate();
 
 
-  // get completed tasks
 
-  // get uncompleted tasks
+  // update task description
+
+
+
+  // The controller could do this:
+  // date to display
+
+  // decrement date to display
+
+  // increment date to display
+
+
+
 }
