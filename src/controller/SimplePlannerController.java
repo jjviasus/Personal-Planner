@@ -2,9 +2,11 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
+import model.task.ITask;
 import view.IPlannerView;
 import view.SimplePlannerView;
 
@@ -44,6 +46,8 @@ public class SimplePlannerController implements IPlannerController, ActionListen
       case "right":
         this.incrementDate();
         break;
+      case "delete":
+        //this.deleteTask();
 
       default:
         throw new IllegalArgumentException("Illegal action performed");

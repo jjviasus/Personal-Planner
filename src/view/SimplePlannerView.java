@@ -3,11 +3,14 @@ package view;
 import controller.IPlannerController;
 import controller.SimplePlannerController;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +25,8 @@ import model.task.PlannerTask;
 public class SimplePlannerView extends JFrame implements IPlannerView  {
   JLabel dateLabel;
   IPlannerController controller;
+  Font boldTitle  = new Font(Font.SANS_SERIF,  Font.BOLD, 16);
+  Font taskFont  = new Font(Font.SANS_SERIF,  Font.PLAIN, 12);
 
   /**
    * Constructs a simple planner view and takes an instance of a controller
@@ -34,51 +39,79 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
 
   @Override
   public void render(IDate date, List<ITask> listOfTasks) {
-    System.out.println(date);
 
     // main panel to be placed on the frame
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
     mainPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+    mainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     // edit the frame
     add(mainPanel);
-    setResizable(true);
+    setResizable(false);
+    setSize(500,700);
     setVisible(true);
+    setContentPane(mainPanel);
 
     // date panel
     JPanel datePanel = new JPanel();
     this.dateLabel = new JLabel(date.toString());
+    this.dateLabel.setFont(boldTitle);
     datePanel.add(dateLabel);
+    BoxLayout layout = new BoxLayout(datePanel, BoxLayout.Y_AXIS);
+    datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.Y_AXIS));
     datePanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+    datePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
     datePanel.setBorder(BorderFactory.createEtchedBorder());
+    datePanel.setPreferredSize(new Dimension(500, 100));
     mainPanel.add(datePanel);
 
     // tasks page
     JPanel tasksPage = new JPanel();
     tasksPage.setLayout(new BoxLayout(tasksPage, BoxLayout.Y_AXIS));
-    tasksPage.setAlignmentY(Component.CENTER_ALIGNMENT);
+    tasksPage.setAlignmentY(Component.LEFT_ALIGNMENT);
+    tasksPage.setAlignmentX(Component.CENTER_ALIGNMENT);
     tasksPage.setBorder(BorderFactory.createEtchedBorder());
+    tasksPage.setSize(500,500);
     mainPanel.add(tasksPage);
     // tasks header
     JPanel tasksHeader = new JPanel();
     tasksHeader.setLayout(new BoxLayout(tasksHeader, BoxLayout.X_AXIS));
-    tasksHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
-    JLabel tasksLabel = new JLabel("Tasks");
+    tasksHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+    JLabel tasksLabel = new JLabel("Tasks:");
+    tasksLabel.setFont(boldTitle);
     tasksHeader.add(tasksLabel);
     tasksPage.add(tasksHeader);
     // task list
     JPanel taskList = new JPanel();
     taskList.setLayout(new BoxLayout(taskList, BoxLayout.Y_AXIS));
-    taskList.setAlignmentY(Component.LEFT_ALIGNMENT);
+    taskList.setAlignmentX(Component.LEFT_ALIGNMENT);
     tasksPage.add(taskList);
     // individual task
     for (ITask t : listOfTasks) {
       JPanel taskRow = new JPanel();
       taskRow.setLayout(new BoxLayout(taskRow, BoxLayout.X_AXIS));
+      taskRow.setAlignmentX(Component.LEFT_ALIGNMENT);
       taskRow.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+      // complete check box
+      JCheckBox checkBox = new JCheckBox();
+      checkBox.setSelected(t.getStatus());
+      taskRow.add(checkBox);
+      // task description
       JLabel taskDescription = new JLabel(t.getDescription());
+      taskDescription.setFont(taskFont);
       taskRow.add(taskDescription);
+      // edit button
+      JButton editButton = new JButton("Edit");
+      taskRow.add(editButton);
+      // delete button
+      JButton deleteButton = new JButton("Delete");
+      deleteButton.addActionListener((SimplePlannerController) controller);
+      deleteButton.setActionCommand("delete");
+      // should I tell the controller what task to delete?
+      taskRow.add(deleteButton);
+
       taskList.add(taskRow);
     }
 
@@ -86,30 +119,28 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
    /* JScrollPane scrollPane = new JScrollPane(taskRow);
     taskList.add(scrollPane);*/
 
-    // completion button
-    // edit button
-    // delete button
-
     // left and right arrow panel
     JPanel dateChanger = new JPanel();
-    mainPanel.add(dateChanger);
     dateChanger.setLayout(new BoxLayout(dateChanger, BoxLayout.X_AXIS));
     dateChanger.setAlignmentX(Component.CENTER_ALIGNMENT);
     dateChanger.setBorder(BorderFactory.createEtchedBorder());
+    dateChanger.setSize(500,100);
     // left button
-    JButton leftButton = new JButton("Left");
+    JButton leftButton = new JButton("- 1 day");
     leftButton.addActionListener((SimplePlannerController) controller);
     leftButton.setActionCommand("left");
     dateChanger.add(leftButton);
     // right button
-    JButton rightButton = new JButton("Right");
+    JButton rightButton = new JButton("+ 1 day");
     rightButton.addActionListener((SimplePlannerController) controller);
     rightButton.setActionCommand("right");
     dateChanger.add(rightButton);
+    mainPanel.add(dateChanger);
+
+    //repaint();
+    revalidate();
   }
 
-  // should the above method take a date and list of tasks?
-
-  // should the controller be calling render everytime a change is made? Check pyramid solitaire
-
 }
+
+// the size of the boxes might have to do with the alignment (the spacing between boxes)
