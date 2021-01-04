@@ -1,5 +1,5 @@
 package model.task;
-//TODO hashCode and equals
+//TODO mark this identifiable
 
 import model.date.PlannerDate;
 

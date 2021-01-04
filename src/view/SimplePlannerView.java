@@ -3,6 +3,7 @@ package view;
 import controller.IPlannerController;
 import controller.SimplePlannerController;
 import controller.TaskActionListener;
+import controller.TaskKeyListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import model.date.IDate;
 import model.task.ITask;
+import model.task.PlannerTask;
 
 /**
  * Displays a visual view of a simple planner.
@@ -82,9 +84,12 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     tasksPage.setMaximumSize(new Dimension(500,500));
     tasksPage.setBackground(new Color(50,50,50));
     mainPanel.add(tasksPage);
+
     // "Tasks:" header and add task button
     JPanel headerAndAddTaskRow = new JPanel();
     headerAndAddTaskRow.setLayout(new BoxLayout(headerAndAddTaskRow, BoxLayout.X_AXIS));
+    headerAndAddTaskRow.setMaximumSize(new Dimension(700,50)); // why does width 700 fix it? it should be 500
+    headerAndAddTaskRow.setBackground(new Color(50,50,50));
     tasksPage.add(headerAndAddTaskRow);
     // "Tasks:" header
     JLabel tasksLabel = new JLabel("Tasks:");
@@ -93,9 +98,14 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     headerAndAddTaskRow.add(tasksLabel);
     // Add task button
     JButton addTask = new JButton("Add task");
+    addTask.setFont(taskFont);
+    addTask.setBackground(new Color(60,150,60));
+    addTask.setForeground(new Color(250,250,250));
+    addTask.setOpaque(true);
+    addTask.setBorderPainted(false);
+    addTask.setActionCommand("add");
+    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask("Allow the user to type"))); // this should trigger a new text field to be generated so that the user can add the task
     headerAndAddTaskRow.add(addTask);
-
-
 
     // task list
     JPanel taskList = new JPanel();
@@ -127,6 +137,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       taskText.setFont(taskFont);
       taskText.setBackground(new Color(60,60,60));
       taskText.setForeground(new Color(250,250,250));
+      taskText.addKeyListener(new TaskKeyListener(controller, t, taskText));
       taskRow.add(taskText);
       // edit button
       //JButton editButton = new JButton("Edit");

@@ -55,6 +55,20 @@ public interface IPlannerController {
    */
   public void toggleTask(ITask task) throws IllegalArgumentException;
 
+  /**
+   * Adds the given task to the planner at the date the user is currently viewing.
+   */
+  public void addTask() throws IllegalArgumentException;
+
+  /**
+   * Updates the given task's description to the new description
+   * @param task the task to update
+   * @param description the new description
+   * @throws IllegalArgumentException if the task is null or does not exist at the date the user is viewing,
+   * or if the description is null
+   */
+  public void updateDescription(ITask task, String description);
+
 }
 
 

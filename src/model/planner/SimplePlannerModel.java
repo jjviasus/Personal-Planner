@@ -297,4 +297,23 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
     int year = now.getYear();
     return new PlannerDate(month, day, year);
   }
+
+  @Override
+  public void updateTaskDescription(ITask task, IDate date, String description)
+      throws IllegalArgumentException, IllegalStateException {
+    if (task == null || date == null || description == null) {
+      throw new IllegalArgumentException("task, date, and description must be non-null");
+    }
+
+    if (!this.taskMap.containsKey(date) || !this.taskMap.get(date).contains(task)) {
+      throw new IllegalStateException("date has no tasks and/or task does not exist at date");
+    }
+
+    for (ITask t : this.taskMap.get(date)) {
+      if (t.equals(task)) {
+        t.updateDescription(description);
+        // return?
+      }
+    }
+  }
 }

@@ -37,6 +37,9 @@ public class TaskActionListener implements ActionListener {
       case "toggle":
         controller.toggleTask(task);
         break;
+      case "add":
+        controller.addTask();
+        break;
       default:
         throw new IllegalArgumentException("Illegal action performed");
 

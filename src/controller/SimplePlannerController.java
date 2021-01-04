@@ -7,6 +7,7 @@ import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
 import model.task.ITask;
+import model.task.PlannerTask;
 import view.IPlannerView;
 import view.SimplePlannerView;
 
@@ -72,6 +73,22 @@ public class SimplePlannerController implements IPlannerController, ActionListen
       model.setTaskAsCompleted(task, this.dateToDisplay);
     }
 
+    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+  }
+
+  @Override
+  public void addTask() throws IllegalArgumentException {
+    model.addTask(new PlannerTask(""), this.dateToDisplay);
+    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+  }
+
+  @Override
+  public void updateDescription(ITask task, String description) {
+    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
+      throw new IllegalArgumentException("task is null or does not exist at date");
+    }
+
+    model.updateTaskDescription(task, this.dateToDisplay, description);
     view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
   }
 

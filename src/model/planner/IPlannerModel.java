@@ -1,6 +1,7 @@
 package model.planner;
 
 import java.util.List;
+import model.date.IDate;
 
 /**
  * An interface that represents the model for a planner. The model stores, updates,
@@ -131,9 +132,15 @@ public interface IPlannerModel<Theme, Date, Task> {
    */
   public Date getCurrentDate();
 
-
-
-  // update task description
+  /**
+   * Updates the given task's description at the given date to the given description
+   * @param task the task to update
+   * @param date the date the task exists
+   * @param description the new description
+   * @throws IllegalArgumentException if task, date, or description are null.
+   * @throws IllegalStateException if the task does not exist at the given date or the date has no tasks
+   */
+  public void updateTaskDescription(Task task, Date date, String description) throws IllegalArgumentException, IllegalStateException;
 
 
 
