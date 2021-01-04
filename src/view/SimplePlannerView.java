@@ -2,9 +2,12 @@ package view;
 
 import controller.IPlannerController;
 import controller.SimplePlannerController;
+import controller.TaskActionListener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -97,19 +100,23 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       // complete check box
       JCheckBox checkBox = new JCheckBox();
       checkBox.setSelected(t.getStatus());
+      checkBox.addActionListener(new TaskActionListener(controller, t));
+      checkBox.setActionCommand("toggle");
       taskRow.add(checkBox);
+      System.out.println(t.getStatus());
       // task description
       JLabel taskDescription = new JLabel(t.getDescription());
       taskDescription.setFont(taskFont);
       taskRow.add(taskDescription);
       // edit button
       JButton editButton = new JButton("Edit");
+      editButton.addActionListener(new TaskActionListener(controller, t)); // give it the update description
+      editButton.setActionCommand("edit");
       taskRow.add(editButton);
       // delete button
       JButton deleteButton = new JButton("Delete");
-      deleteButton.addActionListener((SimplePlannerController) controller);
+      deleteButton.addActionListener(new TaskActionListener(controller, t));
       deleteButton.setActionCommand("delete");
-      // should I tell the controller what task to delete?
       taskRow.add(deleteButton);
 
       taskList.add(taskRow);
@@ -140,6 +147,8 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     //repaint();
     revalidate();
   }
+
+
 
 }
 

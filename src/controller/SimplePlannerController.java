@@ -38,6 +38,44 @@ public class SimplePlannerController implements IPlannerController, ActionListen
   }
 
   @Override
+  public void deleteTask(ITask task) throws IllegalArgumentException {
+    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
+      throw new IllegalArgumentException("task is null or does not exist at date");
+    }
+
+    model.removeTask(task, this.dateToDisplay);
+    view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
+  }
+
+  @Override
+  public void editTask(ITask task, String description) throws IllegalArgumentException {
+    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
+      throw new IllegalArgumentException("task is null or does not exist at date");
+    }
+
+    // update the tasks description
+    //model.updateTaskDescription(description);
+
+    // render
+  }
+
+  @Override
+  public void toggleTask(ITask task) throws IllegalArgumentException {
+    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
+      throw new IllegalArgumentException("task is null or does not exist at date");
+    }
+
+    // toggle the tasks status
+    if (task.getStatus()) {
+      model.setTaskAsIncomplete(task, this.dateToDisplay);
+    } else {
+      model.setTaskAsCompleted(task, this.dateToDisplay);
+    }
+
+    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+  }
+
+  @Override
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
       case "left":
@@ -46,9 +84,6 @@ public class SimplePlannerController implements IPlannerController, ActionListen
       case "right":
         this.incrementDate();
         break;
-      case "delete":
-        //this.deleteTask();
-
       default:
         throw new IllegalArgumentException("Illegal action performed");
 

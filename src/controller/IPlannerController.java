@@ -4,6 +4,7 @@ import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
 import model.planner.SimplePlannerModel;
+import model.task.ITask;
 
 /**
  * Provides a controller for interacting with a personal planner. The controller handles
@@ -30,7 +31,32 @@ public interface IPlannerController {
    * The date and task page should be updated for the viewer.
    */
   public void incrementDate();
+
+  /**
+   * Deletes the given task from the planner at the date the user is currently viewing.
+   * @param task the task to delete
+   * @throws IllegalArgumentException if the given task is null or does not exist at the date
+   */
+  public void deleteTask(ITask task) throws IllegalArgumentException;
+
+  /**
+   * Updates the task's description to the new description.
+   * @param task the task to edit
+   * @param description the new task description
+   * @throws IllegalArgumentException if the given task or description is null or the task
+   * does not exist at the date
+   */
+  public void editTask(ITask task, String description) throws IllegalArgumentException;
+
+  /**
+   * Toggles the completion status of the given task
+   * @param task the task to toggle
+   * @throws IllegalArgumentException if the given task is null or does not exist at the date
+   */
+  public void toggleTask(ITask task) throws IllegalArgumentException;
+
 }
+
 
 
 // What will happen in the view?
