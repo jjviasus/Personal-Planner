@@ -87,6 +87,7 @@ public class SimplePlannerController implements IPlannerController, ActionListen
 
     model.updateTaskDescription(task, this.dateToDisplay, description);
     view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
+    System.out.println(model.getTasksAtDate(dateToDisplay));
   }
 
   @Override

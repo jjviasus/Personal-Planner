@@ -35,6 +35,7 @@ import model.task.PlannerTask;
  * Displays a visual view of a simple planner.
  */
 public class SimplePlannerView extends JFrame implements IPlannerView  {
+  JPanel headerAndAddTaskRow;
   IPlannerController controller;
   JLabel dateLabel;
   JPanel taskList;
@@ -82,27 +83,11 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     tasksPage.repaint();
 
     // "Tasks:" header and add task button
-    JPanel headerAndAddTaskRow = new JPanel();
+    headerAndAddTaskRow = new JPanel();
     headerAndAddTaskRow.setBackground(new Color(50,50,50));
     tasksPage.add(headerAndAddTaskRow, BorderLayout.NORTH);
-    // "Tasks:" header
-    JLabel tasksLabel = new JLabel("Tasks:");
-    tasksLabel.setFont(title);
-    tasksLabel.setForeground(new Color(250,250,250));
-    headerAndAddTaskRow.add(tasksLabel, BorderLayout.WEST);
-    // spacer
-    headerAndAddTaskRow.add(Box.createHorizontalStrut(210));
-    // Add task button
-    JButton addTask = new JButton("Add task");
-    addTask.setFont(taskFont);
-    addTask.setBackground(new Color(60,150,60));
-    addTask.setForeground(new Color(250,250,250));
-    //addTask.setPreferredSize(new Dimension(120,30));
-    addTask.setOpaque(true);
-    addTask.setBorderPainted(false);
-    addTask.setActionCommand("add");
-    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask(""))); // this should trigger a new text field to be generated so that the user can add the task
-    headerAndAddTaskRow.add(addTask, BorderLayout.EAST);
+    // "Tasks:" header and Add task button
+    refreshAddTask();
 
     // task list
     taskList = new JPanel();
@@ -165,6 +150,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
   @Override
   public void updateTasks(List<ITask> listOfTasks) {
     taskList.removeAll();
+    refreshAddTask();
 
     for (ITask t : listOfTasks) {
       JPanel taskRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -207,7 +193,31 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     revalidate();
   }
 
+  /**
+   * Destroys and creates a new add task button. This is necessary because
+   * the action of clicking the button creates a new instance of a blank task.
+   * Without this, the same instance of a task will be incorrectly passed around.
+   */
+  private void refreshAddTask() {
+    headerAndAddTaskRow.removeAll();
 
+    JLabel tasksLabel = new JLabel("Tasks:");
+    tasksLabel.setFont(title);
+    tasksLabel.setForeground(new Color(250,250,250));
+    headerAndAddTaskRow.add(tasksLabel, BorderLayout.WEST);
+    // spacer
+    headerAndAddTaskRow.add(Box.createHorizontalStrut(210));
+
+    JButton addTask = new JButton("Add task");
+    addTask.setFont(taskFont);
+    addTask.setBackground(new Color(60,150,60));
+    addTask.setForeground(new Color(250,250,250));
+    addTask.setOpaque(true);
+    addTask.setBorderPainted(false);
+    addTask.setActionCommand("add");
+    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask("")));
+    headerAndAddTaskRow.add(addTask, BorderLayout.EAST);
+  }
 
   // make an update task page
 
