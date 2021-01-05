@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.JTextField;
 import model.task.ITask;
 
@@ -21,12 +20,7 @@ public class TaskKeyListener extends KeyAdapter {
   @Override
   public void keyPressed(KeyEvent e) {
     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-      try {
         controller.updateDescription(task, textField.getText());
-        textField.setText("");
-      } catch (IllegalArgumentException illegalArgumentException) {
-        illegalArgumentException.printStackTrace();
-      }
     }
   }
 }

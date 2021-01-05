@@ -1,6 +1,7 @@
 package model.task;
 //TODO mark this identifiable
 
+import java.util.concurrent.atomic.AtomicLong;
 import model.date.PlannerDate;
 
 /**
@@ -8,6 +9,8 @@ import model.date.PlannerDate;
  * It has a description and completion status.
  */
 public class PlannerTask implements ITask {
+  static final AtomicLong NEXT_ID = new AtomicLong(0);
+  final long id = NEXT_ID.getAndIncrement();
   private String description;
   private boolean status;
 
@@ -55,11 +58,15 @@ public class PlannerTask implements ITask {
       return false;
     }
     PlannerTask task = (PlannerTask) o;
-    return description == task.description && status == task.status;
+    return description == task.description && status == task.status && id == task.id;
   }
 
   @Override
   public int hashCode() {
     return description.length() * 100000 + (status ? 1 : 1000);
+  }
+
+  public long getId() {
+    return id;
   }
 }

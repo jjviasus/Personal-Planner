@@ -23,7 +23,7 @@ public interface IDate {
   public int getYear();
 
   /**
-   * Adds one day to the current date.
+   * Adds one day to the current date and returns the new date.
    */
   public void addDay();
 

@@ -28,14 +28,18 @@ public class SimplePlannerController implements IPlannerController, ActionListen
 
   @Override
   public void decrementDate() {
-    this.dateToDisplay.subtractDay();
+    PlannerDate prevDate = new PlannerDate(this.dateToDisplay.getMonth(), this.dateToDisplay.getDay(), this.dateToDisplay.getYear());
+    prevDate.subtractDay();
+    dateToDisplay = prevDate;
     view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
   }
 
   @Override
   public void incrementDate() {
-    this.dateToDisplay.addDay();
-    view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
+    PlannerDate nextDate = new PlannerDate(this.dateToDisplay.getMonth(), this.dateToDisplay.getDay(), this.dateToDisplay.getYear());
+    nextDate.addDay();
+    dateToDisplay = nextDate;
+    view.render(nextDate, model.getTasksAtDate(nextDate));
   }
 
   @Override
@@ -46,18 +50,6 @@ public class SimplePlannerController implements IPlannerController, ActionListen
 
     model.removeTask(task, this.dateToDisplay);
     view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
-  }
-
-  @Override
-  public void editTask(ITask task, String description) throws IllegalArgumentException {
-    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
-      throw new IllegalArgumentException("task is null or does not exist at date");
-    }
-
-    // update the tasks description
-    //model.updateTaskDescription(description);
-
-    // render
   }
 
   @Override
@@ -77,16 +69,19 @@ public class SimplePlannerController implements IPlannerController, ActionListen
   }
 
   @Override
-  public void addTask() throws IllegalArgumentException {
-    model.addTask(new PlannerTask(""), this.dateToDisplay);
+  public void addTask(ITask task) throws IllegalArgumentException {
+    if (task == null) {
+      throw new IllegalArgumentException("task must be non-null");
+    }
+    model.addTask(task, this.dateToDisplay);
     view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
   public void updateDescription(ITask task, String description) {
-    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
+   /* if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
       throw new IllegalArgumentException("task is null or does not exist at date");
-    }
+    }*/ // don't think I need this because the model checks for this verification !!!!!!!!!!!!!!!
 
     model.updateTaskDescription(task, this.dateToDisplay, description);
     view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));

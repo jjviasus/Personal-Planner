@@ -30,7 +30,6 @@ import model.task.PlannerTask;
  * Displays a visual view of a simple planner.
  */
 public class SimplePlannerView extends JFrame implements IPlannerView  {
-  JLabel dateLabel;
   IPlannerController controller;
   Font boldTitle  = new Font("Courier new",  Font.BOLD, 30);
   Font title  = new Font("Courier",  Font.PLAIN, 30);
@@ -63,9 +62,9 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
 
     // date panel
     JPanel datePanel = new JPanel();
-    this.dateLabel = new JLabel(date.toString());
-    this.dateLabel.setForeground(new Color(250,250,250));
-    this.dateLabel.setFont(boldTitle);
+    JLabel dateLabel = new JLabel(date.toString());
+    dateLabel.setForeground(new Color(250,250,250));
+    dateLabel.setFont(boldTitle);
     datePanel.add(dateLabel);
     datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.Y_AXIS));
     datePanel.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -104,7 +103,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     addTask.setOpaque(true);
     addTask.setBorderPainted(false);
     addTask.setActionCommand("add");
-    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask("Allow the user to type"))); // this should trigger a new text field to be generated so that the user can add the task
+    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask(""))); // this should trigger a new text field to be generated so that the user can add the task
     headerAndAddTaskRow.add(addTask);
 
     // task list
@@ -127,11 +126,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       checkBox.addActionListener(new TaskActionListener(controller, t));
       checkBox.setActionCommand("toggle");
       taskRow.add(checkBox);
-      System.out.println(t.getStatus());
       // task description
-      //JLabel taskDescription = new JLabel(t.getDescription());
-      //taskDescription.setFont(taskFont);
-      //taskRow.add(taskDescription);
       JTextField taskText = new JTextField(t.getDescription());
       taskText.setMaximumSize(new Dimension(500, 35));
       taskText.setFont(taskFont);
@@ -139,11 +134,6 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       taskText.setForeground(new Color(250,250,250));
       taskText.addKeyListener(new TaskKeyListener(controller, t, taskText));
       taskRow.add(taskText);
-      // edit button
-      //JButton editButton = new JButton("Edit");
-      //editButton.addActionListener(new TaskActionListener(controller, t)); // give it the update description
-      //editButton.setActionCommand("edit");
-      //taskRow.add(editButton);
       // delete button
       JButton deleteButton = new JButton("Delete");
       deleteButton.addActionListener(new TaskActionListener(controller, t));

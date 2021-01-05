@@ -28,23 +28,27 @@ public class SimplePlannerModelTest {
     // check model has no tasks
     assertTrue(model.getAllTasks().isEmpty());
     // add the task
-    model.addTask(new PlannerTask("Study"), new PlannerDate(11,11,2000));
+    PlannerTask study = new PlannerTask("Study");
+    model.addTask(study, new PlannerDate(11,11,2000));
     // check the model has the task
-    assertEquals(Arrays.asList(new PlannerTask("Study")), model.getAllTasks());
+    assertEquals(Arrays.asList(study), model.getAllTasks());
 
     // add another task same date
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    PlannerTask run = new PlannerTask("Run");
+    model.addTask(run, new PlannerDate(11,11,2000));
     // check the model has the task
-    assertEquals(Arrays.asList(new PlannerTask("Study"), new PlannerTask("Run")), model.getAllTasks());
+    assertEquals(Arrays.asList(study, run), model.getAllTasks());
 
     // add another task later date
-    model.addTask(new PlannerTask("Eat"), new PlannerDate(3,1,2020));
+    PlannerTask eat = new PlannerTask("Eat");
+    model.addTask(eat, new PlannerDate(3,1,2020));
     // check the model has the task
-    assertEquals(Arrays.asList(new PlannerTask("Study"), new PlannerTask("Run"), new PlannerTask("Eat")), model.getAllTasks());
+    assertEquals(Arrays.asList(study, run, eat), model.getAllTasks());
 
     // add another task earlier date
-    model.addTask(new PlannerTask("Sleep"), new PlannerDate(4,24,1990));
-    assertEquals(Arrays.asList(new PlannerTask("Sleep"),new PlannerTask("Study"), new PlannerTask("Run"), new PlannerTask("Eat")), model.getAllTasks());
+    PlannerTask sleep = new PlannerTask("Sleep");
+    model.addTask(sleep, new PlannerDate(4,24,1990));
+    assertEquals(Arrays.asList(sleep, study, run, eat), model.getAllTasks());
   }
 
   // addTask invalid
@@ -255,22 +259,26 @@ public class SimplePlannerModelTest {
     // zero points
     assertEquals(0, model.getTotalPoints());
 
+    PlannerTask run = new PlannerTask("Run");
+    PlannerTask eat = new PlannerTask("Eat");
+    PlannerTask oldTask = new PlannerTask("Old task");
+
     // non-zero points
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Eat"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Old task"), new PlannerDate(11,11,1950));
+    model.addTask(run, new PlannerDate(11,11,2000));
+    model.addTask(eat, new PlannerDate(11,11,2000));
+    model.addTask(oldTask, new PlannerDate(11,11,1950));
     // check that the points have not been added
     assertEquals(0, model.getTotalPoints());
     // mark the old task as complete and check the points
-    model.setTaskAsCompleted(new PlannerTask("Old task"), new PlannerDate(11,11,1950));
+    model.setTaskAsCompleted(oldTask, new PlannerDate(11,11,1950));
     assertEquals(true, model.tasksCompleteAtDate(new PlannerDate(11,11,1950)));
     assertEquals(10, model.getTotalPoints());
     // mark only one task on 11/11/2000 as complete, not both
-    model.setTaskAsCompleted(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    model.setTaskAsCompleted(run, new PlannerDate(11,11,2000));
     assertEquals(10, model.getTotalPoints());
     assertEquals(false, model.tasksCompleteAtDate(new PlannerDate(11,11,2000)));
     // mark both tasks on 11/11/2000 as complete
-    model.setTaskAsCompleted(new PlannerTask("Eat"), new PlannerDate(11,11,2000));
+    model.setTaskAsCompleted(eat, new PlannerDate(11,11,2000));
     assertEquals(20, model.getTotalPoints());
     assertEquals(true, model.tasksCompleteAtDate(new PlannerDate(11,11,2000)));
   }
