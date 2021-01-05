@@ -4,10 +4,14 @@ import controller.IPlannerController;
 import controller.SimplePlannerController;
 import controller.TaskActionListener;
 import controller.TaskKeyListener;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +25,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import model.date.IDate;
 import model.task.ITask;
@@ -31,6 +36,8 @@ import model.task.PlannerTask;
  */
 public class SimplePlannerView extends JFrame implements IPlannerView  {
   IPlannerController controller;
+  JLabel dateLabel;
+  JPanel taskList;
   Font boldTitle  = new Font("Courier new",  Font.BOLD, 30);
   Font title  = new Font("Courier",  Font.PLAIN, 30);
   Font taskFont  = new Font("Courier new",  Font.PLAIN, 20);
@@ -47,77 +54,121 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
   @Override
   public void render(IDate date, List<ITask> listOfTasks) {
 
-    // main panel to be placed on the frame
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-    mainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
     // edit the frame
-    add(mainPanel);
-    setResizable(false);
-    setSize(500,700);
+    setMinimumSize(new Dimension(500,700));
     setVisible(true);
-    setContentPane(mainPanel);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    //setResizable(false);
 
     // date panel
     JPanel datePanel = new JPanel();
-    JLabel dateLabel = new JLabel(date.toString());
+    dateLabel = new JLabel(date.toString());
     dateLabel.setForeground(new Color(250,250,250));
     dateLabel.setFont(boldTitle);
-    datePanel.add(dateLabel);
-    datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.Y_AXIS));
-    datePanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-    datePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    datePanel.setBorder(BorderFactory.createEtchedBorder());
-    datePanel.setMaximumSize(new Dimension(500, 70));
+    datePanel.add(dateLabel, BorderLayout.CENTER);
+    //datePanel.setBorder(BorderFactory.createEtchedBorder());
+    datePanel.setMaximumSize(new Dimension(500, 100));
     datePanel.setBackground(new Color(40,40,40));
-    mainPanel.add(datePanel);
+    this.add(datePanel, BorderLayout.NORTH);
+    datePanel.revalidate();
+    datePanel.repaint();
 
     // tasks page
     JPanel tasksPage = new JPanel();
-    tasksPage.setLayout(new BoxLayout(tasksPage, BoxLayout.Y_AXIS));
-    tasksPage.setAlignmentY(Component.LEFT_ALIGNMENT);
-    tasksPage.setAlignmentX(Component.CENTER_ALIGNMENT);
-    tasksPage.setBorder(BorderFactory.createEtchedBorder());
-    tasksPage.setMaximumSize(new Dimension(500,500));
     tasksPage.setBackground(new Color(50,50,50));
-    mainPanel.add(tasksPage);
+    tasksPage.setLayout(new FlowLayout(FlowLayout.CENTER));
+    this.add(tasksPage, BorderLayout.CENTER);
+    tasksPage.revalidate();
+    tasksPage.repaint();
 
     // "Tasks:" header and add task button
     JPanel headerAndAddTaskRow = new JPanel();
-    headerAndAddTaskRow.setLayout(new BoxLayout(headerAndAddTaskRow, BoxLayout.X_AXIS));
-    headerAndAddTaskRow.setMaximumSize(new Dimension(700,50)); // why does width 700 fix it? it should be 500
     headerAndAddTaskRow.setBackground(new Color(50,50,50));
-    tasksPage.add(headerAndAddTaskRow);
+    tasksPage.add(headerAndAddTaskRow, BorderLayout.NORTH);
     // "Tasks:" header
     JLabel tasksLabel = new JLabel("Tasks:");
     tasksLabel.setFont(title);
     tasksLabel.setForeground(new Color(250,250,250));
-    headerAndAddTaskRow.add(tasksLabel);
+    headerAndAddTaskRow.add(tasksLabel, BorderLayout.WEST);
+    // spacer
+    headerAndAddTaskRow.add(Box.createHorizontalStrut(210));
     // Add task button
     JButton addTask = new JButton("Add task");
     addTask.setFont(taskFont);
     addTask.setBackground(new Color(60,150,60));
     addTask.setForeground(new Color(250,250,250));
+    //addTask.setPreferredSize(new Dimension(120,30));
     addTask.setOpaque(true);
     addTask.setBorderPainted(false);
     addTask.setActionCommand("add");
     addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask(""))); // this should trigger a new text field to be generated so that the user can add the task
-    headerAndAddTaskRow.add(addTask);
+    headerAndAddTaskRow.add(addTask, BorderLayout.EAST);
 
     // task list
-    JPanel taskList = new JPanel();
-    taskList.setLayout(new BoxLayout(taskList, BoxLayout.Y_AXIS));
-    taskList.setAlignmentX(Component.LEFT_ALIGNMENT);
-    taskList.setBackground(new Color(60,60,60));
-    tasksPage.add(taskList);
-    // individual task
+    taskList = new JPanel();
+    taskList.setBackground(new Color(60,60,60)); // all 60's
+    taskList.setLayout(new FlowLayout(FlowLayout.LEADING));
+    taskList.setPreferredSize(new Dimension(500,525));
+    tasksPage.add(taskList, BorderLayout.CENTER);
+    updateTasks(listOfTasks);
+/*    // scroll pane
+    JScrollPane scrollPane = new JScrollPane(taskList);
+    tasksPage.add(scrollPane);*/
+
+
+
+    // left and right arrow panel
+    JPanel dateChanger = new JPanel();
+    //dateChanger.setBorder(BorderFactory.createEtchedBorder());
+    dateChanger.setBackground(new Color(50,50,50));
+    dateChanger.setMaximumSize(new Dimension(500,200));
+    // left button
+    JButton leftButton = new JButton("Previous day");
+    leftButton.addActionListener((SimplePlannerController) controller);
+    leftButton.setActionCommand("left");
+    //leftButton.setMaximumSize(new Dimension(200,50));
+    leftButton.setFont(taskFont);
+    leftButton.setBackground(new Color(60,60,60));
+    leftButton.setForeground(new Color(250,250,250));
+    leftButton.setOpaque(true);
+    leftButton.setBorderPainted(false);
+    dateChanger.add(leftButton, BorderLayout.WEST);
+    // right button
+    JButton rightButton = new JButton("Next day");
+    rightButton.addActionListener((SimplePlannerController) controller);
+    rightButton.setActionCommand("right");
+    //rightButton.setMaximumSize(new Dimension(200,50));
+    rightButton.setFont(taskFont);
+    rightButton.setBackground(new Color(60,60,60));
+    rightButton.setForeground(new Color(250,250,250));
+    rightButton.setOpaque(true);
+    rightButton.setBorderPainted(false);
+    dateChanger.add(rightButton, BorderLayout.EAST);
+    this.add(dateChanger, BorderLayout.SOUTH);
+    dateChanger.revalidate();
+    dateChanger.repaint();
+
+    // current day button?
+
+
+  }
+
+  // make an update date method that edits date label and repaints
+  @Override
+  public void updateDate(IDate date) {
+    dateLabel.setText(date.toString());
+
+    repaint();
+    revalidate();
+  }
+
+  @Override
+  public void updateTasks(List<ITask> listOfTasks) {
+    taskList.removeAll();
+
     for (ITask t : listOfTasks) {
-      JPanel taskRow = new JPanel();
-      taskRow.setLayout(new BoxLayout(taskRow, BoxLayout.X_AXIS));
-      taskRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-      taskRow.setAlignmentY(Component.CENTER_ALIGNMENT);
+      JPanel taskRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      taskRow.setPreferredSize(new Dimension(490,60));
       taskRow.setBackground(new Color(60,60,60));
 
       // complete check box
@@ -128,14 +179,16 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       taskRow.add(checkBox);
       // task description
       JTextField taskText = new JTextField(t.getDescription());
-      taskText.setMaximumSize(new Dimension(500, 35));
+      taskText.setPreferredSize(new Dimension(310, 50));
       taskText.setFont(taskFont);
-      taskText.setBackground(new Color(60,60,60));
+      taskText.setBackground(new Color(65,65,65));
       taskText.setForeground(new Color(250,250,250));
       taskText.addKeyListener(new TaskKeyListener(controller, t, taskText));
       taskRow.add(taskText);
+      taskRow.add(Box.createHorizontalStrut(5));
       // delete button
       JButton deleteButton = new JButton("Delete");
+
       deleteButton.addActionListener(new TaskActionListener(controller, t));
       deleteButton.setActionCommand("delete");
       deleteButton.setFont(taskFont);
@@ -148,49 +201,17 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       taskList.add(taskRow);
     }
 
-    // scroll pane
-   /* JScrollPane scrollPane = new JScrollPane(taskRow);
-    taskList.add(scrollPane);*/
 
-    // left and right arrow panel
-    JPanel dateChanger = new JPanel();
-    dateChanger.setLayout(new BoxLayout(dateChanger, BoxLayout.X_AXIS));
-    dateChanger.setAlignmentX(Component.CENTER_ALIGNMENT);
-    dateChanger.setAlignmentY(Component.CENTER_ALIGNMENT);
-    dateChanger.setBorder(BorderFactory.createEtchedBorder());
-    dateChanger.setBackground(new Color(40,40,40));
-    dateChanger.setMaximumSize(new Dimension(500,120));
-    // left button
-    JButton leftButton = new JButton("Previous day");
-    leftButton.addActionListener((SimplePlannerController) controller);
-    leftButton.setActionCommand("left");
-    leftButton.setMaximumSize(new Dimension(200,50));
-    leftButton.setFont(taskFont);
-    leftButton.setBackground(new Color(60,60,60));
-    leftButton.setForeground(new Color(250,250,250));
-    leftButton.setOpaque(true);
-    leftButton.setBorderPainted(false);
-    dateChanger.add(leftButton);
-    // right button
-    JButton rightButton = new JButton("Next day");
-    rightButton.addActionListener((SimplePlannerController) controller);
-    rightButton.setActionCommand("right");
-    rightButton.setMaximumSize(new Dimension(200,50));
-    rightButton.setFont(taskFont);
-    rightButton.setBackground(new Color(60,60,60));
-    rightButton.setForeground(new Color(250,250,250));
-    rightButton.setOpaque(true);
-    rightButton.setBorderPainted(false);
-    dateChanger.add(rightButton);
-    mainPanel.add(dateChanger);
 
-    // current day button?
-
-    //repaint();
+    repaint();
     revalidate();
   }
 
 
+
+  // make an update task page
+
+  // update task description?
 
 }
 

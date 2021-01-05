@@ -31,7 +31,8 @@ public class SimplePlannerController implements IPlannerController, ActionListen
     PlannerDate prevDate = new PlannerDate(this.dateToDisplay.getMonth(), this.dateToDisplay.getDay(), this.dateToDisplay.getYear());
     prevDate.subtractDay();
     dateToDisplay = prevDate;
-    view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
+    view.updateDate(prevDate);
+    view.updateTasks(model.getTasksAtDate(prevDate));
   }
 
   @Override
@@ -39,7 +40,8 @@ public class SimplePlannerController implements IPlannerController, ActionListen
     PlannerDate nextDate = new PlannerDate(this.dateToDisplay.getMonth(), this.dateToDisplay.getDay(), this.dateToDisplay.getYear());
     nextDate.addDay();
     dateToDisplay = nextDate;
-    view.render(nextDate, model.getTasksAtDate(nextDate));
+    view.updateDate(nextDate);
+    view.updateTasks(model.getTasksAtDate(nextDate));
   }
 
   @Override
@@ -49,7 +51,7 @@ public class SimplePlannerController implements IPlannerController, ActionListen
     }
 
     model.removeTask(task, this.dateToDisplay);
-    view.render(this.dateToDisplay, model.getTasksAtDate(dateToDisplay));
+    view.updateTasks(model.getTasksAtDate(dateToDisplay));
   }
 
   @Override
@@ -65,7 +67,7 @@ public class SimplePlannerController implements IPlannerController, ActionListen
       model.setTaskAsCompleted(task, this.dateToDisplay);
     }
 
-    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+    view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
@@ -74,7 +76,7 @@ public class SimplePlannerController implements IPlannerController, ActionListen
       throw new IllegalArgumentException("task must be non-null");
     }
     model.addTask(task, this.dateToDisplay);
-    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+    view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
@@ -84,7 +86,7 @@ public class SimplePlannerController implements IPlannerController, ActionListen
     }*/ // don't think I need this because the model checks for this verification !!!!!!!!!!!!!!!
 
     model.updateTaskDescription(task, this.dateToDisplay, description);
-    view.render(this.dateToDisplay, model.getTasksAtDate(this.dateToDisplay));
+    view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
