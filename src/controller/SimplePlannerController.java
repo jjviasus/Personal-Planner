@@ -2,16 +2,15 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
 import model.task.ITask;
-import model.task.PlannerTask;
+import model.theme.ITheme;
 import view.IPlannerView;
 import view.SimplePlannerView;
 
-public class SimplePlannerController implements IPlannerController, ActionListener {
+public class SimplePlannerController implements IPlannerController<ITheme, IDate, ITask>, ActionListener {
   private IPlannerModel model;
   private IPlannerView view;
   private IDate dateToDisplay;
@@ -45,21 +44,13 @@ public class SimplePlannerController implements IPlannerController, ActionListen
   }
 
   @Override
-  public void deleteTask(ITask task) throws IllegalArgumentException {
-    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
-      throw new IllegalArgumentException("task is null or does not exist at date");
-    }
-
+  public void deleteTask(ITask task) {
     model.removeTask(task, this.dateToDisplay);
     view.updateTasks(model.getTasksAtDate(dateToDisplay));
   }
 
   @Override
-  public void toggleTask(ITask task) throws IllegalArgumentException {
-    if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
-      throw new IllegalArgumentException("task is null or does not exist at date");
-    }
-
+  public void toggleTask(ITask task) {
     // toggle the tasks status
     if (task.getStatus()) {
       model.setTaskAsIncomplete(task, this.dateToDisplay);
@@ -71,23 +62,15 @@ public class SimplePlannerController implements IPlannerController, ActionListen
   }
 
   @Override
-  public void addTask(ITask task) throws IllegalArgumentException {
-    if (task == null) {
-      throw new IllegalArgumentException("task must be non-null");
-    }
+  public void addTask(ITask task) {
     model.addTask(task, this.dateToDisplay);
     view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
   public void updateDescription(ITask task, String description) {
-   /* if (task == null || !this.model.getTasksAtDate(this.dateToDisplay).contains(task)) {
-      throw new IllegalArgumentException("task is null or does not exist at date");
-    }*/ // don't think I need this because the model checks for this verification !!!!!!!!!!!!!!!
-
     model.updateTaskDescription(task, this.dateToDisplay, description);
     view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
-    System.out.println(model.getTasksAtDate(dateToDisplay));
   }
 
   @Override
@@ -101,7 +84,6 @@ public class SimplePlannerController implements IPlannerController, ActionListen
         break;
       default:
         throw new IllegalArgumentException("Illegal action performed");
-
     }
   }
 }

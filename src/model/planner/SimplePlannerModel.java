@@ -65,9 +65,6 @@ public class SimplePlannerModel implements IPlannerModel<ITheme, IDate, ITask> {
       // put the date as a new key in the tree map
       this.taskMap.put(date, Arrays.asList(task));
     }
-
-    System.out.println(task + "added at date: " + date);
-
   }
 
   @Override

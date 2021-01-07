@@ -83,16 +83,23 @@ public class SimplePlannerModelTest {
     // get tasks on empty list of tasks
     assertTrue(model.getAllTasks().isEmpty());
 
+    ITask run = new PlannerTask("Run");
+    ITask runAgain = new PlannerTask("Run again");
+    ITask sleep = new PlannerTask("Sleep");
+    ITask sleepAgain = new PlannerTask("Sleep again");
+    ITask roamTheFuture = new PlannerTask("Roam the future");
+    ITask roamThePast = new PlannerTask("Roam the past");
+
     // add some tasks to varying days
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Run again"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Sleep"), new PlannerDate(1,11,2000));
-    model.addTask(new PlannerTask("Sleep again"), new PlannerDate(1,12,2000));
-    model.addTask(new PlannerTask("Roam the future"), new PlannerDate(11,11,2030));
-    model.addTask(new PlannerTask("Roam the past"), new PlannerDate(6,1,1980));
+    model.addTask(run, new PlannerDate(11,11,2000));
+    model.addTask(runAgain, new PlannerDate(11,11,2000));
+    model.addTask(sleep, new PlannerDate(1,11,2000));
+    model.addTask(sleepAgain, new PlannerDate(1,12,2000));
+    model.addTask(roamTheFuture, new PlannerDate(11,11,2030));
+    model.addTask(roamThePast, new PlannerDate(6,1,1980));
 
     // get the tasks
-    assertEquals(new ArrayList<>(Arrays.asList(new PlannerTask("Roam the past"), new PlannerTask("Sleep"), new PlannerTask("Sleep again"), new PlannerTask("Run"), new PlannerTask("Run again"), new PlannerTask("Roam the future"))), model.getAllTasks());
+    assertEquals(new ArrayList<>(Arrays.asList(roamThePast, sleep, sleepAgain, run, runAgain, roamTheFuture)), model.getAllTasks());
   }
 
   // removeTask
@@ -100,25 +107,28 @@ public class SimplePlannerModelTest {
   public void removeTask() {
     IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
+    ITask run = new PlannerTask("Run");
+
     // add a task
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    model.addTask(run, new PlannerDate(11,11,2000));
     // check its there
-    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getAllTasks());
+    assertEquals(Arrays.asList(run), model.getAllTasks());
     // remove it
-    model.removeTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    model.removeTask(run, new PlannerDate(11,11,2000));
     // check it was removed
     assertTrue(model.getAllTasks().isEmpty());
 
+    ITask runAgain = new PlannerTask("Run again");
 
     // add tasks different days
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Run again"), new PlannerDate(1,12,2002));
+    model.addTask(run, new PlannerDate(11,11,2000));
+    model.addTask(runAgain, new PlannerDate(1,12,2002));
     // check its there
-    assertEquals(Arrays.asList(new PlannerTask("Run"), new PlannerTask("Run again")), model.getAllTasks());
+    assertEquals(Arrays.asList(run, runAgain), model.getAllTasks());
     // remove it
-    model.removeTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
+    model.removeTask(run, new PlannerDate(11,11,2000));
     // check it was remove
-    assertEquals(Arrays.asList(new PlannerTask("Run again")), model.getAllTasks());
+    assertEquals(Arrays.asList(runAgain), model.getAllTasks());
   }
 
   // removeTask invalid
@@ -180,19 +190,24 @@ public class SimplePlannerModelTest {
   public void moveTask() {
     IPlannerModel<ITheme, IDate, ITask> model = new SimplePlannerModel();
 
+    ITask run = new PlannerTask("Run");
+
     // move a task to a new date with no tasks in it
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
-    model.moveTask(new PlannerTask("Run"), new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
-    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    model.addTask(run, new PlannerDate(11,11,2000));
+    assertEquals(Arrays.asList(run), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    model.moveTask(run, new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+    assertEquals(Arrays.asList(run), model.getTasksAtDate(new PlannerDate(11,12,2000)));
     assertTrue(model.getTasksAtDate(new PlannerDate(11,11,2000)).isEmpty());
 
+    ITask study = new PlannerTask("Study");
+    ITask work = new PlannerTask("Work");
+
     // move a task to a date that already has tasks in it
-    model.addTask(new PlannerTask("Study"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Work"), new PlannerDate(11,11,2000));
-    model.moveTask(new PlannerTask("Study"), new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
-    assertEquals(Arrays.asList(new PlannerTask("Run"), new PlannerTask("Study")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
-    assertEquals(Arrays.asList(new PlannerTask("Work")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    model.addTask(study, new PlannerDate(11,11,2000));
+    model.addTask(work, new PlannerDate(11,11,2000));
+    model.moveTask(study, new PlannerDate(11,11,2000), new PlannerDate(11,12,2000));
+    assertEquals(Arrays.asList(run, study), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    assertEquals(Arrays.asList(work), model.getTasksAtDate(new PlannerDate(11,11,2000)));
   }
 
   // moveTask invalid
@@ -343,7 +358,6 @@ public class SimplePlannerModelTest {
         new Color(255,255,255), 12, new Color(30,30,30),
         new Color(50,50,50), new Color(75,75,75), 10, 1);
     // get themes
-    System.out.println(model.getAllThemes());
     assertTrue(model.getAllThemes().contains(light));
     assertEquals(new ArrayList(Arrays.asList(light, dark)), model.getAllThemes());
 
@@ -489,13 +503,17 @@ public class SimplePlannerModelTest {
     // date that has no tasks
     assertEquals(new ArrayList<>(), model.getTasksAtDate(new PlannerDate(1,1,2000)));
 
-    model.addTask(new PlannerTask("Run"), new PlannerDate(11,11,2000));
-    model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
-    model.addTask(new PlannerTask("Eat"), new PlannerDate(11,12,2000));
-    model.addTask(new PlannerTask("Eat again"), new PlannerDate(11,12,2000));
+    ITask run = new PlannerTask("Run");
+    ITask eat = new PlannerTask("Eat");
+    ITask eatAgain = new PlannerTask("Eat again");
 
-    assertEquals(Arrays.asList(new PlannerTask("Run")), model.getTasksAtDate(new PlannerDate(11,11,2000)));
-    assertEquals(Arrays.asList(new PlannerTask("Eat"), new PlannerTask("Eat"), new PlannerTask("Eat again")), model.getTasksAtDate(new PlannerDate(11,12,2000)));
+    model.addTask(run, new PlannerDate(11,11,2000));
+    model.addTask(eat, new PlannerDate(11,12,2000));
+    model.addTask(eat, new PlannerDate(11,12,2000));
+    model.addTask(eatAgain, new PlannerDate(11,12,2000));
+
+    assertEquals(Arrays.asList(run), model.getTasksAtDate(new PlannerDate(11,11,2000)));
+    assertEquals(Arrays.asList(eat, eat, eatAgain), model.getTasksAtDate(new PlannerDate(11,12,2000)));
   }
 
   // getTasksAtDate invalid

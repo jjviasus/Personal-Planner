@@ -6,26 +6,16 @@ import controller.TaskActionListener;
 import controller.TaskKeyListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import model.date.IDate;
 import model.task.ITask;
@@ -34,7 +24,7 @@ import model.task.PlannerTask;
 /**
  * Displays a visual view of a simple planner.
  */
-public class SimplePlannerView extends JFrame implements IPlannerView  {
+public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITask>  {
   JPanel headerAndAddTaskRow;
   IPlannerController controller;
   JLabel dateLabel;
@@ -101,7 +91,6 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     tasksPage.add(scrollPane);*/
 
 
-
     // left and right arrow panel
     JPanel dateChanger = new JPanel();
     //dateChanger.setBorder(BorderFactory.createEtchedBorder());
@@ -134,11 +123,8 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     dateChanger.repaint();
 
     // current day button?
-
-
   }
 
-  // make an update date method that edits date label and repaints
   @Override
   public void updateDate(IDate date) {
     dateLabel.setText(date.toString());
@@ -187,8 +173,6 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
       taskList.add(taskRow);
     }
 
-
-
     repaint();
     revalidate();
   }
@@ -218,11 +202,4 @@ public class SimplePlannerView extends JFrame implements IPlannerView  {
     addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask("")));
     headerAndAddTaskRow.add(addTask, BorderLayout.EAST);
   }
-
-  // make an update task page
-
-  // update task description?
-
 }
-
-// the size of the boxes might have to do with the alignment (the spacing between boxes)
