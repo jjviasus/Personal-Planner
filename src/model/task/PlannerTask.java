@@ -19,6 +19,11 @@ public class PlannerTask implements ITask {
     this.status = false;
   }
 
+  public PlannerTask(String description, boolean status) {
+    this.description = description;
+    this.status = status;
+  }
+
   @Override
   public String getDescription() {
     return this.description;
