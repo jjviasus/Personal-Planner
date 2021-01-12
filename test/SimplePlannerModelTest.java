@@ -4,10 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.awt.Color;
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.Box.Filler;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;

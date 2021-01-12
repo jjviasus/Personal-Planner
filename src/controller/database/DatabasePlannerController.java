@@ -1,27 +1,29 @@
-package controller;
+package controller.database;
 
+import controller.IPlannerController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import model.date.IDate;
 import model.date.PlannerDate;
 import model.planner.IPlannerModel;
-import model.task.ITask;
+import model.task.IDatabaseTask;
 import model.theme.ITheme;
+import view.DatabasePlannerView;
 import view.IPlannerView;
-import view.SimplePlannerView;
 
-public class SimplePlannerController implements IPlannerController<ITheme, IDate, ITask>, ActionListener {
+public class DatabasePlannerController implements IPlannerController<ITheme, IDate, IDatabaseTask>,
+    ActionListener {
   private IPlannerModel model;
   private IPlannerView view;
   private IDate dateToDisplay;
 
   @Override
-  public <Theme, Date, Task> void createPlanner(IPlannerModel<Theme, Date, Task> model) throws IllegalArgumentException {
+  public void usePlanner(IPlannerModel model) throws IllegalArgumentException {
     if (model == null) throw new IllegalArgumentException("null model given");
 
     this.model = model;
     this.dateToDisplay = (PlannerDate) this.model.getCurrentDate();
-    this.view = new SimplePlannerView(this);
+    this.view = new DatabasePlannerView(this);
     view.render(dateToDisplay, this.model.getTasksAtDate(dateToDisplay));
   }
 
@@ -44,13 +46,13 @@ public class SimplePlannerController implements IPlannerController<ITheme, IDate
   }
 
   @Override
-  public void deleteTask(ITask task) {
+  public void deleteTask(IDatabaseTask task) {
     model.removeTask(task, this.dateToDisplay);
     view.updateTasks(model.getTasksAtDate(dateToDisplay));
   }
 
   @Override
-  public void toggleTask(ITask task) {
+  public void toggleTask(IDatabaseTask task) {
     // toggle the tasks status
     if (task.getStatus()) {
       model.setTaskAsIncomplete(task, this.dateToDisplay);
@@ -62,13 +64,13 @@ public class SimplePlannerController implements IPlannerController<ITheme, IDate
   }
 
   @Override
-  public void addTask(ITask task) {
+  public void addTask(IDatabaseTask task) {
     model.addTask(task, this.dateToDisplay);
     view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }
 
   @Override
-  public void updateDescription(ITask task, String description) {
+  public void updateDescription(IDatabaseTask task, String description) {
     model.updateTaskDescription(task, this.dateToDisplay, description);
     view.updateTasks(model.getTasksAtDate(this.dateToDisplay));
   }

@@ -1,9 +1,9 @@
 package view;
 
 import controller.IPlannerController;
-import controller.simple.SimplePlannerController;
-import controller.simple.TaskActionListener;
-import controller.simple.TaskKeyListener;
+import controller.database.DatabasePlannerController;
+import controller.database.DatabaseTaskActionListener;
+import controller.database.DatabaseTaskKeyListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,13 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import model.date.IDate;
+import model.task.DatabasePlannerTask;
+import model.task.IDatabaseTask;
 import model.task.ITask;
-import model.task.PlannerTask;
 
-/**
- * Displays a visual view of a simple planner.
- */
-public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITask>  {
+public class DatabasePlannerView extends JFrame implements IPlannerView<IDate, IDatabaseTask>  {
   JPanel headerAndAddTaskRow;
   IPlannerController controller;
   JLabel dateLabel;
@@ -38,12 +36,12 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
    * to communicate with.
    * @param controller
    */
-  public SimplePlannerView(IPlannerController controller) {
+  public DatabasePlannerView(IPlannerController controller) {
     this.controller = controller;
   }
 
   @Override
-  public void render(IDate date, List<ITask> listOfTasks) {
+  public void render(IDate date, List<IDatabaseTask> listOfTasks) {
 
     // edit the frame
     setMinimumSize(new Dimension(500,700));
@@ -98,7 +96,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
     dateChanger.setMaximumSize(new Dimension(500,200));
     // left button
     JButton leftButton = new JButton("Previous day");
-    leftButton.addActionListener((SimplePlannerController) controller);
+    leftButton.addActionListener((DatabasePlannerController) controller);
     leftButton.setActionCommand("left");
     //leftButton.setMaximumSize(new Dimension(200,50));
     leftButton.setFont(taskFont);
@@ -109,7 +107,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
     dateChanger.add(leftButton, BorderLayout.WEST);
     // right button
     JButton rightButton = new JButton("Next day");
-    rightButton.addActionListener((SimplePlannerController) controller);
+    rightButton.addActionListener((DatabasePlannerController) controller);
     rightButton.setActionCommand("right");
     //rightButton.setMaximumSize(new Dimension(200,50));
     rightButton.setFont(taskFont);
@@ -134,11 +132,11 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
   }
 
   @Override
-  public void updateTasks(List<ITask> listOfTasks) {
+  public void updateTasks(List<IDatabaseTask> listOfTasks) {
     taskList.removeAll();
     refreshAddTask();
 
-    for (ITask t : listOfTasks) {
+    for (IDatabaseTask t : listOfTasks) {
       JPanel taskRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
       taskRow.setPreferredSize(new Dimension(490,60));
       taskRow.setBackground(new Color(60,60,60));
@@ -146,7 +144,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
       // complete check box
       JCheckBox checkBox = new JCheckBox();
       checkBox.setSelected(t.getStatus());
-      checkBox.addActionListener(new TaskActionListener(controller, t));
+      checkBox.addActionListener(new DatabaseTaskActionListener(controller, t));
       checkBox.setActionCommand("toggle");
       taskRow.add(checkBox);
       // task description
@@ -155,13 +153,13 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
       taskText.setFont(taskFont);
       taskText.setBackground(new Color(65,65,65));
       taskText.setForeground(new Color(250,250,250));
-      taskText.addKeyListener(new TaskKeyListener(controller, t, taskText));
+      taskText.addKeyListener(new DatabaseTaskKeyListener(controller, t, taskText));
       taskRow.add(taskText);
       taskRow.add(Box.createHorizontalStrut(5));
       // delete button
       JButton deleteButton = new JButton("Delete");
 
-      deleteButton.addActionListener(new TaskActionListener(controller, t));
+      deleteButton.addActionListener(new DatabaseTaskActionListener(controller, t));
       deleteButton.setActionCommand("delete");
       deleteButton.setFont(taskFont);
       deleteButton.setBackground(new Color(100,60,60));
@@ -199,7 +197,7 @@ public class SimplePlannerView extends JFrame implements IPlannerView<IDate, ITa
     addTask.setOpaque(true);
     addTask.setBorderPainted(false);
     addTask.setActionCommand("add");
-    addTask.addActionListener(new TaskActionListener(this.controller, new PlannerTask("")));
+    addTask.addActionListener(new DatabaseTaskActionListener(this.controller, new DatabasePlannerTask("")));
     System.out.println("new task in view");
     headerAndAddTaskRow.add(addTask, BorderLayout.EAST);
   }

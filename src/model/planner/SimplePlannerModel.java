@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TreeMap;
 import model.date.IDate;
 import model.date.PlannerDate;
+import model.planner.IPlannerModel;
 import model.task.ITask;
 import model.theme.ITheme;
 import model.theme.PlannerTheme;

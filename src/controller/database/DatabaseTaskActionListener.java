@@ -1,19 +1,22 @@
-package controller;
+package controller.database;
 
+import controller.IPlannerController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import model.task.ITask;
+import model.task.DatabasePlannerTask;
+import model.task.IDatabaseTask;
 
-/**
- * This class allows the view to communicate which task should be manipulated and how with the
- * controller.
- */
-public class TaskActionListener implements ActionListener {
+public class DatabaseTaskActionListener implements ActionListener {
 
   IPlannerController controller;
-  ITask task;
+  IDatabaseTask task;
 
-  public TaskActionListener(IPlannerController controller, ITask task) {
+  public DatabaseTaskActionListener(IPlannerController controller) {
+    this.controller = controller;
+    this.task = new DatabasePlannerTask("", false);
+  }
+
+  public DatabaseTaskActionListener(IPlannerController controller, IDatabaseTask task) {
     this.controller = controller;
     this.task = task;
   }

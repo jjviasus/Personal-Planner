@@ -1,10 +1,6 @@
 package controller;
 
-import model.date.IDate;
-import model.date.PlannerDate;
 import model.planner.IPlannerModel;
-import model.planner.SimplePlannerModel;
-import model.task.ITask;
 
 /**
  * Provides a controller for interacting with a personal planner. The controller handles
@@ -18,7 +14,7 @@ public interface IPlannerController<Theme, Date, Task> {
    * @param model the particular planner model
    * @throws IllegalArgumentException if the given model is null
    */
-  public <Theme, Date, Task> void createPlanner(IPlannerModel<Theme, Date, Task> model);
+  public <Theme, Date, Task> void usePlanner(IPlannerModel<Theme, Date, Task> model);
 
   /**
    * Decrements the date the user is currently viewing in the planner by 1 day.
